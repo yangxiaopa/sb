@@ -1,0 +1,6 @@
+numpy: it means numeric python 
+import numpy as np   #将numpy导入并以别名np别名代替
+书籍 python for data analysis 
+np.dot(A,B) 矩阵的相乘  np.add(A,B) 矩阵相加 a.T #  np.linalg.inv(a) #求a逆矩阵 np.linalg.eig(a) #求a特征值
+import numpy as np
+import matplotlib.pyplot as plt
