@@ -6,3 +6,5 @@ np.in1d([1,2,3],a) #测试值1，2，3是否在矩阵a中
 np.save（）
 import numpy as np
 import matplotlib.pyplot as plt
+import pandas as pd
+
