@@ -8,3 +8,29 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 
+PyCUDA 入门
+使用pycuda前须导入并初始化：
+import pycuda.driver as cuda
+import pycuda.autoinit  #初始化
+from pycuda.compiler import sourceModule
+
+传输数据（将数据传输到设备上，在pycuda中主要从numpy主机上的阵列传输数据）
+import numpy
+for example: a=numpy.random.randn(4,4) #制作一个随机数的4x4数组。
+在设备上分配内存
+for example: a_gpu=cuda.mem_alloc(a.nbytes)
+将数据传输到GPU
+cuda.memcpy_htod(a_gpu,a)
+
+执行内核
+pycuda.compiler.SourceModule:
+mod=SourceModule("""
+_global_void doublify(float*a)
+{
+  int idx = threadIdx.x + threadIdx.y*4;
+  a[idx] *=2;
+ }
+ """)
+ #编译代码将其加载到设备上，找到对我们的引用pycuda.driver.Function并调用，指定a_gpu作为参数，块大小为4x4
+ func=mod.get_function("doublify")
+ func(a_gpu,block=(4,4,1))
