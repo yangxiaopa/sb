@@ -157,10 +157,11 @@ equalDOF $rNodeTag $cNodeTag $dof1 $dof2 ...
                    主节点        从节点       节点上自由度的限制
 equalDOF 117 126 3 4 5 6；#连接单元的两点117 126的这几个自由度被固定
 ------------------------------------------------------------------------------------------------
-                  
-                  
-                  
--------------------------------------------------------------------------                  
+element zeroLength 260        117       126      -mat 1 1     -dir 1 2 
+        零长度单元  单元标签   i端节点  j端节点  单轴材料的标签    材料方向
+（节点117和126之间的桁架标签260在连接单元1 2自由度方向采用UniaxialMaterial本构曲线1）
+ (zerolength元素对象由同一位置上两节点定义，可通过多个UniaxialMaterial对象连接，表示元素的力-变形关系) 零长度单元建模时为零长度，构件变形时为单位长度                  
+--------------------------------------------------------------------------------------------------------------------------------------------------                  
 uniaxialMaterial Elastic         1000   0.1265625E+11
 uniaxialMaterial Elastic 2 2.482E+004
     单轴材料       弹性材料   材料编号   弹性模量值
@@ -169,7 +170,6 @@ uniaxialMaterial Elastic 2 2.482E+004
 uniaxialMaterial Concrete01     1      -50130000.00000             -0.00192      -25060000.00000             -0.00365
 ---------------------------------------------------------------------------------------------------------------------------------                  
 #define steel
-uniaxialMaterial Steel02   101      455700000.00000   199999995904.00000
 uniaxialMaterial Steel02 $matTag $Fy $E0 $b
 uniaxialMaterial Steel02 1              100000              2000              0.15 
                         材料编号         屈服力             弹性刚度           屈服后硬化率
@@ -190,11 +190,39 @@ rigidDiaphragm $perpDirn $masterNodeTag $slaveNodeTag1 $slaveNodeTag2
   刚性隔板     刚性隔板方法为3   主节点 (刚心)     从节点1              从节点2      ……
 rigidDiaphragm 3 2 4 5 6;          #从节点4,5,6随主节点2做X-Y plan的平移和旋转   （采用刚性隔板模型时，需与constraint lagrange配合使用，否者运行出错）
 ---------------------------------------------------------------------------------------------------------------------------------------------                  
-                  
-
-                  
-                  
-                  
+element elasticBeamColumn $ eleTag $ iNode $ jNode $ A $ E $ G $ J $ Iy $ Iz $ transfTag 
+element elasticBeamColumn 10 16 18 1.125E+005 2.482E+004 1.034E+004 1.530E+009 1.898E+009 5.859E+008 10
+      单元标签  单元始点  单元终点 单元截面积 弹性模量 剪切模量  截面惯性扭矩 截面y/z惯性矩Iy/Iz  局部坐标轴编号
+-------------------------------------------------------------------------------------------------------------------------------------------- 
+pattern UniformExcitation $IDloadTag $iGMdirection -accel $AccelSeries;
+#uniformexcitation 模式用于定义施加指定方向的加速度记录，如地震加速度时程文件。
+#multiplesupport 模式用于指定节点指定方向施加自定义的位移记录或地震动记录。
+-----------------------------------------------------------------------------------------------------------------------------------------------
+recorder Node    -file dispx.txt   -time   -nodeRange  1 23945  -dof 1 disp
+recorder Node    -file dispy.txt   -time   -nodeRange  1 23945  -dof 2 disp
+recorder Node    -file dispz.txt   -time   -nodeRange  1 23945  -dof 3 disp                  
+recorder Node    -file node1.out   -time   -node 1              -dof 1 2 3 disp
+                    #输出文件名                               #节点1的X Y Z方向的位移
+recorder EnvelopeNode -file nodesD.out -time -node 1 2 3 4 -dof 1 2 disp ;   #求多个节点位移响应的包络值 
+recorder Node <-file $fileName> <-time> <-node ($node1 $node2 -dof ($dof1 $dof2 ...) $respType
+###   $respType ：响应类型，如 disp—位移、vel—速度、accel—加速度 reaction—节点反力
+--------------------------------------------------------------------------------------------------------------------------------------------------------                  
+recorder EnvelopeElement -file eleD.out -time -ele 2 3 4 localForce   #多个单元局部坐标下的单元力向量
+--------------------------------------------------------------------------------------------------------------------------------------------------------                  
+constraints Transformation;  #Transformation Method 不允许节点存在多重约束
+constraints Plain;       #Plain Constraint  #执行单点约束(fix command )和等自由度定义(equalDOF command)的多点约束命令                                         
+constraints Lagrange; #Lagrange Multipliers #约束处理命令通过将Lagrange乘法引入到等式系统进行强制约束
+-------------------------------------------------------------------------------------------------------------------------
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                
                   
                   
                   
