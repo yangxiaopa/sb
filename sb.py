@@ -144,6 +144,23 @@ uniaxialMaterial Elastic         1000   0.1265625E+11
 uniaxialMaterial Concrete01     1      -50130000.00000             -0.00192      -25060000.00000             -0.00365                  
 #define steel
 uniaxialMaterial Steel02   101      455700000.00000   199999995904.00000                    
+geomTransf PDelta     1       1.0000000       0.0000000       0.0000000                  
+element dispBeamColumn 10336     1 11186     3      10000     1 -mass      5625.0000000000                  
+element dispBeamColumn 40067 23305  6367     3   82640000    81 -mass         0.0000010000
+eleLoad -ele     1 -type -beamUniform 0    -12173.5576171875                  
+load  1342         0.0000000000         0.0000000000    -79339.2265625000         0.0000000000         0.0000000000         0.0000000000                  
+rigidDiaphragm 3       3     77     13      1     59      5     87      7     15      9     21     11     19     17     25     23    111    119     29     27     31    104     33     37     35     73     43     41     45     39    129     49    103     97     63     81     91                  
+                  
+                  
+
+                  
+                  
+                  
+                  
+                  
+                  
+                  
+                  
                   
                   
                   
