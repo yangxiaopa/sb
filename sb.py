@@ -378,6 +378,7 @@ pattern UniformExcitation    1001         1        -accel  -dt 0.01 -filepath GM
 ETABS 9.7.2>>>S2k文件>>>ETO>>>opensees的TCL文件（做适当修改）
                                                 
 实例12 杆件铰接的处理：在腹杆两端定义zerolength单元，并通过equalDOF命令实现节点约束，从而释放腹杆端部弯矩。
+""" 为在ETO中实现杆端弯矩释放 1.将需要释放弯矩的一端从整体中分割一段很小距离，该距离导入eto后变成零长度单元。2.将该段截面指定为RIGID,并对其端部进行弯矩释放。"""                                                
 实例19 带粘滞阻尼器的框架动力分析：在opensees中通过定义采用MAXWELL材料的纤维截面，并指定给安装了粘滞阻尼器的斜撑来实现粘滞阻尼器的模拟。                                                
 # uniaxialMaterial Maxwell $matTag   $K     $C     $a    $Length
 # uniaxialMaterial Maxwell    4    100000   3000   1       1                                    
