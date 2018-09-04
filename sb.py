@@ -212,7 +212,69 @@ recorder EnvelopeElement -file eleD.out -time -ele 2 3 4 localForce   #多个单
 constraints Transformation;  #Transformation Method 不允许节点存在多重约束
 constraints Plain;       #Plain Constraint  #执行单点约束(fix command )和等自由度定义(equalDOF command)的多点约束命令                                         
 constraints Lagrange; #Lagrange Multipliers #约束处理命令通过将Lagrange乘法引入到等式系统进行强制约束
+ （命令用于构造ConstraintHandle对象，确定约束方程在分析中执行方式，约束方程为自由度强制指定值或自由度之间关系。                                               
 -------------------------------------------------------------------------------------------------------------------------
+numberer RCM; #RCM算法用于非线性分析开始前对用户编制的节点进行优化以减小结构整体刚度矩阵的带宽和数据存储量，提高计算效率。                                                
+numberer Plain #节点自由度编号采用输入节点的顺序。
+# plain numberer # reverse cuthill-mckee numberer  # alternative minimum degree numberer 
+---------------------------------------------------------------------------------------------------------------------------------
+#system ProfileSPD;
+#system SparseSYM	
+system CulaSparse *************************opensees-gpu新增加算法*****************#                                          
+#BandSPD SOE    #ProfileSPD SOE   #SuperLU SOE    #UmfPack SOE    #FullGeneral     #SparseSYM SOE   #Mumps     #Cusp
+# BandGeneral SOE #bandgeneral类对象用于非对称的带状矩阵
+system Umfpack  用于构造使用Umfpack求解器的稀疏方程组                                                
+system 命令用于构造linearSOE和linearSOLVER对象来存储和求解分析中的方程组                                               
+--------------------------------------------------------------------------------------------------------------------------------------                                                
+test NormDispIncr 1.0e-4 2000 2;  
+                                                
+test Energyincr 1.0e-4 200; #采用能量准则的收敛准则，容差1.0e-4最大迭代步200                                                 
+test命令用于构件convergencetest对象，某些solutionAlgorithm对象需要一个convergencetest对象来确定迭代步骤结束时是否实现了收敛。
+"""                                                
+Norm Unbalance Test 
+Norm Displacement Increment Test 
+Energy Increment Test 
+Relative Norm Unbalance Test 
+Relative Norm Displacement Increment Test 
+Total Relative Norm Displacement Increment Test 
+Relative Energy Increment Test 
+Fixed Number of Iterations
+"""                                                
+----------------------------------------------------------------------------------------------------------------------------------------                                                
+algorithm NewtonLineSearch 0.75;
+                                                
+algorithm newton; # 用增量迭代法进行非线性方程组求解，将外荷载施加划分为若干加载步，在每一级荷载步中进行迭代计算，使每一级增量步中计算误差减小很小范围。                                                
+algorithm 命令用于构造一个SolutionAlgorithm对象，该对象确定解决非线性方程所用步骤的顺序。
+"""
+Linear Algorithm 
+Newton Algorithm 
+Newton with Line Search Algorithm 
+Modified Newton Algorithm 
+Krylov-Newton Algorithm 
+Secant Newton Algorithm 
+BFGS Algorithm 
+Broyden Algorithm
+"""                                                
+-------------------------------------------------------------------------------------------------------------------------------------------------------------                                                
+integrator LoadControl 0.2;                                                
+integrator 用于构造integrator对象，integrator对象确定方程对象系统中各项含义                                                
+"""                                                
+Static Integrators: #静态分析器
+Load Control 
+Displacement Control 
+Minimum Unbalanced Displacement Norm 
+Arc-Length Control 
+
+Transient Integrators: #瞬态分析器
+Central Difference 
+Newmark Method 
+Hilber-Hughes-Taylor Method  **************       ****************
+Generalized Alpha Method 
+TRBDF2 
+Explicit Difference
+integrator Newmark 0.5 0.25                                                 
+"""                                                
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------                                                
                                                 
                                                 
                                                 
