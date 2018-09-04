@@ -325,6 +325,70 @@ test $testType $testTol $testIter
 set algotype krylovNewton
 algorithm $algotype
 -------------------------------------------------------------------------------------------------------------------------------------                                                
+# define ground motion excitation
+set IDloadTag 1001;   # 工况编号
+set iGMfile "GMX.txt"; # 地震波文件
+set iGMdirection "1"; # 定义地震波输入方向
+set iGMfact "10"; # 定义放大系数
+set dt 0.01; # 定义时间步
+set GMfatt [expr $iGMfact];
+set AccelSeries "Series -dt $dt -filePath $iGMfile -factor $GMfatt";
+pattern UniformExcitation $IDloadTag $iGMdirection -accel $AccelSeries;                                                
+                                                
+                                                
+
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                
+********************************************   ETO程序   ******************************************************************************                                                
+ETABS 9.7.2>>>S2k文件>>>ETO>>>opensees的TCL文件（做适当修改）
+                                                
+实例12 杆件铰接的处理：在腹杆两端定义zerolength单元，并通过equalDOF命令实现节点约束，从而释放腹杆端部弯矩。
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                
                                                 
                                                 
                                                 
