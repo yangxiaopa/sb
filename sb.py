@@ -334,7 +334,7 @@ set dt 0.01; # 定义时间步
 set GMfatt [expr $iGMfact];
 set AccelSeries "Series -dt $dt -filePath $iGMfile -factor $GMfatt";
 pattern UniformExcitation $IDloadTag $iGMdirection -accel $AccelSeries;                                                
-                                                
+pattern UniformExcitation    1001         1        -accel  -dt 0.01 -filepath GMX.txt -factor 10                                          
                                                 
 
                                                 
@@ -378,9 +378,10 @@ pattern UniformExcitation $IDloadTag $iGMdirection -accel $AccelSeries;
 ETABS 9.7.2>>>S2k文件>>>ETO>>>opensees的TCL文件（做适当修改）
                                                 
 实例12 杆件铰接的处理：在腹杆两端定义zerolength单元，并通过equalDOF命令实现节点约束，从而释放腹杆端部弯矩。
-                                                
-                                                
-                                                
+实例19 带粘滞阻尼器的框架动力分析：在opensees中通过定义采用MAXWELL材料的纤维截面，并指定给安装了粘滞阻尼器的斜撑来实现粘滞阻尼器的模拟。                                                
+# uniaxialMaterial Maxwell $matTag   $K     $C     $a    $Length
+# uniaxialMaterial Maxwell    4    100000   3000   1       1                                    
+实例20 带隔震的框架动力分析：在没有考虑隔震支座阻尼影响的前提下，隔震器的强度、刚度由屈服力Fy、弹性刚度K和屈服后硬化率决定，故在简化前提下采用Steel01材料模拟隔震器。                                                
                                                 
                                                 
                                                 
