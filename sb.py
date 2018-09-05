@@ -180,6 +180,7 @@ uniaxialMaterial Concrete01     1      -50130000.00000             -0.00192     
 uniaxialMaterial Steel02 $matTag $Fy $E0 $b
 uniaxialMaterial Steel02 1              100000              2000              0.15 
                         材料编号         屈服力             弹性刚度           屈服后硬化率
+uniaxialMaterial Steel01 4               250                206000            0.01                  
 ------------------------------------------------------------------------------------------------------------------------                  
 geomTransf PDelta     1       1.0000000       0.0000000       0.0000000
 geomTransf Linear $ transfTag $ vecxzX $ vecxzY $ vecxzZ  
@@ -343,13 +344,17 @@ set iGMfile "GMX.txt"; # 地震波文件
 set iGMdirection "1"; # 定义地震波输入方向
 set iGMfact "10"; # 定义放大系数
 set dt 0.01; # 定义时间步
-set GMfatt [expr $iGMfact];
+set GMfatt [expr $iGMfact];  
 set AccelSeries "Series -dt $dt -filePath $iGMfile -factor $GMfatt";
 pattern UniformExcitation $IDloadTag $iGMdirection -accel $AccelSeries;                                                
 pattern UniformExcitation    1001         1        -accel  -dt 0.01 -filepath GMX.txt -factor 10                                          
-                                                
+#对于加载路径，其中在文件中指定因子以获得点之间的恒定时间间隔：
+#timeSeries Path $ tag -dt $ dt -filePath $ filePath <-factor $ cFactor> <-useLast> <-prependZero> <-startTime $ tStart>                                                
 
-                                                
+#UniformExcitation模式允许用户对作用于特定方向的模型应用均匀激励。命令如下：
+#pattern UniformExcitation $ patternTag $ dir -accel $ tsTag <-vel0 $ vel0> <-fact $ cFactor>                                                
+                                                     $ tsTag	定义加速历史的TimeSeries系列的标记。
+---------------------------------------------------------------------------------------------------------------------------
                                                 
                                                 
                                                 
