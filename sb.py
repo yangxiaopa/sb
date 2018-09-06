@@ -199,8 +199,8 @@ rigidDiaphragm $perpDirn $masterNodeTag $slaveNodeTag1 $slaveNodeTag2
 rigidDiaphragm 3 2 4 5 6;          #从节点4,5,6随主节点2做X-Y plan的平移和旋转   （采用刚性隔板模型时，需与constraint lagrange配合使用，否者运行出错）
 ---------------------------------------------------------------------------------------------------------------------------------------------                  
 element elasticBeamColumn $ eleTag $ iNode $ jNode $ A $ E $ G $ J $ Iy $ Iz $ transfTag 
-element elasticBeamColumn 10 16 18 1.125E+005 2.482E+004 1.034E+004 1.530E+009 1.898E+009 5.859E+008 10
-      单元标签  单元始点  单元终点 单元截面积 弹性模量 剪切模量  截面惯性扭矩 截面y/z惯性矩Iy/Iz  局部坐标轴编号
+element elasticBeamColumn 10      16         18   1.125E+005  2.482E+004  1.034E+004   1.530E+009   1.898E+009 5.859E+008    10
+                       单元标签  单元始点  单元终点  单元截面积   弹性模量      剪切模量    截面惯性扭矩    截面y/z惯性矩Iy/Iz    局部坐标轴编号
 -------------------------------------------------------------------------------------------------------------------------------------------- 
 pattern UniformExcitation $IDloadTag $iGMdirection -accel $AccelSeries;
 #uniformexcitation 模式用于定义施加指定方向的加速度记录，如地震加速度时程文件。
@@ -398,9 +398,11 @@ ETABS 9.7.2>>>S2k文件>>>ETO>>>opensees的TCL文件（做适当修改）
 """ 为在ETO中实现杆端弯矩释放 1.将需要释放弯矩的一端从整体中分割一段很小距离，该距离导入eto后变成零长度单元，这个零长度单元两点会在同一空间位子，并在这两个节点设置零长度单元！2.将该段截面指定为RIGID,并对其端部进行弯矩释放。"""                                                
 实例19 带粘滞阻尼器的框架动力分析：在opensees中通过定义采用MAXWELL材料的纤维截面，并指定给安装了粘滞阻尼器的斜撑来实现粘滞阻尼器的模拟。                                                
 # uniaxialMaterial Maxwell $matTag   $K     $C     $a    $Length
-# uniaxialMaterial Maxwell    4    100000   3000   1       1                                    
+# uniaxialMaterial Maxwell    4    100000   3000   1       1
+#粘滞阻尼器在etabs中同样采用Maxwell模型，不同是etabs采用FNA快速模态积分法求解个别构件（阻尼器）的非线性。模态积分点也就需要提供非线性阻尼器单元的线性等效刚度，一般做法，先输入一个较小的刚度放入etabs进行第一次非线性计算，计算完取出阻尼器的滞回曲线，采用滞回曲线计算出等效刚度，再代入etabs进行第二次计算，如此类推。
+#DR.dimitrios G.lingos(McGill University)在opensees开发了MAXWELL单元，运用该单元可以对粘滞阻尼器进行模拟。粘滞阻尼器的模拟建议采用Maxwell单元，而不是采用Viscous单元，maxwell单元收敛性较好。                                                
 实例20 带隔震的框架动力分析：在没有考虑隔震支座阻尼影响的前提下，隔震器的强度、刚度由屈服力Fy、弹性刚度K和屈服后硬化率决定，故在简化前提下采用Steel01材料模拟隔震器。                                                
-                                                
+# 选择首层所有柱，将其分割成两端，选择首层所有柱下半段并指定截面“rigid”（材料为steel）并释放其I端（base那段）的弯矩M2 M3，上述操作为让eto在首层柱底生成零长度单元！                                                
                                                 
                                                 
                                                 
