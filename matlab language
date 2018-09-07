@@ -1,6 +1,14 @@
-MATLAB中计算程序运行时间的代码
+1.MATLAB中计算程序运行时间的代码
 tic
 %代码块
 toc
 dispdisp(['运行时间：',num2str(toc)])
 
+2.创建保存输出文件的目录
+mkdir(Make Directory创建目录)创建目录时应保证新建的目录没有重名
+if { [file exists output] == 0 } {
+	  file mkdir output;
+}  
+# 如果文件夹output不存在，创建一个output文件夹。
+
+3.
