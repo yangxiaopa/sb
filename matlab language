@@ -1,0 +1,6 @@
+MATLAB中计算程序运行时间的代码
+tic
+%代码块
+toc
+dispdisp(['运行时间：',num2str(toc)])
+
