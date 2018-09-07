@@ -231,6 +231,7 @@ numberer Plain #节点自由度编号采用输入节点的顺序。
 system CulaSparse *************************opensees-gpu新增加算法*****************#                                          
 #BandSPD SOE    #ProfileSPD SOE   #SuperLU SOE    #UmfPack SOE    #FullGeneral     #SparseSYM SOE   #Mumps     #Cusp
 # BandGeneral SOE #bandgeneral类对象用于非对称的带状矩阵
+# BandSPD 用于构造方程对象的bandspd线性系统，用于具有带状轮廓的对称正定矩阵系统。用于减小带宽的存储格式。                                                
 system Umfpack  用于构造使用Umfpack求解器的稀疏方程组                                                
 system 命令用于构造linearSOE和linearSOLVER对象来存储和求解分析中的方程组                                               
 --------------------------------------------------------------------------------------------------------------------------------------                                                
