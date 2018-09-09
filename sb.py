@@ -214,9 +214,19 @@ recorder Node    -file node1.out   -time   -node 1              -dof 1 2 3 disp
 recorder EnvelopeNode -file nodesD.out -time -node 1 2 3 4 -dof 1 2 disp ;   #求多个节点位移响应的包络值 
 recorder Node <-file $fileName> <-time> <-node ($node1 $node2 -dof ($dof1 $dof2 ...) $respType
 ###   $respType ：响应类型，如 disp—位移、vel—速度、accel—加速度 reaction—节点反力
+#  recorder Node -file nodesA.out -timeSeries 1 -time -node 1 2 3 4 -dof 1 accel
+#  对于UNIFORMexcitation分析，生成nodeA.out文件，包含节点1 2 3 4在x方向上的绝对加数度（地面运动加速度+相对加数度）注意，未提供timeseries且均匀激励进行分析，记录相对加数度。
+# recorder EnvelopeNode -file nodesD.out -time -node 2 -dof 1 2 3 disp
+6.7 -164.418 3.02 -0.00429913 4.54 -2.08274  
+5.58 243.224 12.26 0.00359666 5.6 2.88886
+5.58 243.224 3.02 0.00429913 5.6 2.88886
+记录节点2在x y z 方向的位移包络值 第一行为为负包络值 第二行为正包络值 第三行为前两者绝对值中的较大值
+# recorder EnvelopeNode -file nodesA.out -time -timeSeries 1 -node 1 2 3 4 -dof 1 accel                                              
 --------------------------------------------------------------------------------------------------------------------------------------------------------                  
-recorder EnvelopeElement -file eleD.out -time -ele 2 3 4 localForce   #多个单元局部坐标下的单元力向量
---------------------------------------------------------------------------------------------------------------------------------------------------------                  
+recorder EnvelopeElement -file eleD.out -time -ele 2 3 4 localForce  #多个单元局部坐标下的单元力向量
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+recorder Drift -file drift.out -time -iNode 1 2 -jNode 3 4 -dof 1 -perpDirn 2    'Drift'输出记录层间位移角，节点间平移差与两节点间竖向距离的比值。
+ --------------------------------------------------------------------------------------------------------------------------------------------------------                                               
 constraints Transformation;  #Transformation Method 不允许节点存在多重约束
 constraints Plain;       #Plain Constraint  #执行单点约束(fix command )和等自由度定义(equalDOF command)的多点约束命令                                         
 constraints Lagrange; #Lagrange Multipliers #约束处理命令通过将Lagrange乘法引入到等式系统进行强制约束
