@@ -325,7 +325,12 @@ tcl允许打开文件以读入和写出
 set file [open tmp.out w];
 puts $file1 "calling tcl ok "                                                
 close $file1
-                  
+                                                
+                                                
+puts [format "%.2f" $b] #输出保留两位小数的形式。
+$ :为变量置换符号。
+expr : 进行数学运算都要使用expr命令执行。
+puts [format "%.2f" $sqt]：为输出的简洁性，将结果保留2位小数。                  
                   
                   
 
