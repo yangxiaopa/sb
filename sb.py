@@ -142,12 +142,13 @@ model BasicBuilder -ndm $ ndm <-ndf $ ndf>
 model BasicBuilder -ndm 3 -ndf 6  #构件模型  
 ---------------------------------------------------------------------------------                  
 node 23945              18.2360              65.9083             137.2250
-node $nodeTag $posx $posy $posz #节点坐标
+node $nodeTag $posx $posy $posz #节点坐标，坐标最好用浮点数表达，而不是用整数
 ------------------------------------------------------------------------------------
 mass $nodeTag $mux $muy $muz $mRx $mRy $mRz
           节点标签        广义质量             转动惯量
 mass 2 2.5 2.5 2.5 0.0 0.0 0.0; # define mass in x y and z coordinates
-（与大部分有限元程序一样Opensees质量源采用节点质量源的形式）
+（与大部分有限元程序一样Opensees质量源采用节点质量源的形式）mass用于在节点上创建质量，质量与质量产生的荷载在opensees中为两个不相关概念，mass定义的质量只影响惯性力，不产生荷载。
+  如希望考虑结构的自重，额外加入重力的定义，与质量定义完全无关。                
 -----------------------------------------------------------------------------                  
 fix $nodeTag  ux  uy  uz  Rx Ry  Rz
 fix 109 1 1 1 1 1 1;   #固定支座
@@ -170,8 +171,9 @@ element zeroLength 5          2          11      -mat 1 1 1   -dir 4 5 6
 element zeroLength 1 2 4 -mat 5 6 -dir 1 2; #swss标记1在节点2和4之间，分别用材料5和6作用于方向1和2                  
 --------------------------------------------------------------------------------------------------------------------------------------------------                  
 uniaxialMaterial Elastic         1000   0.1265625E+11
-uniaxialMaterial Elastic 2 2.482E+004
-    单轴材料       弹性材料   材料编号   弹性模量值
+uniaxialMaterial Elastic          2     2.482E+004
+    单轴材料       弹性材料       材料编号   弹性模量值
+# uniaxialmaterial命令用于定义一个滞回模型，在opensees中滞回模型不区分应力-应变模型 和 力--位移模型 取决与模型用在什么单元上。                 
 ---------------------------------------------------------------------------                  
 #define concrete
 uniaxialMaterial Concrete01     1      -50130000.00000             -0.00192      -25060000.00000             -0.00365
@@ -205,6 +207,22 @@ element elasticBeamColumn 10      16         18   1.125E+005  2.482E+004  1.034E
 pattern UniformExcitation $IDloadTag $iGMdirection -accel $AccelSeries;
 #uniformexcitation 模式用于定义施加指定方向的加速度记录，如地震加速度时程文件。
 #multiplesupport 模式用于指定节点指定方向施加自定义的位移记录或地震动记录。
+pattern 定义荷载工况对象，每个pattern 是一个与timeseries相关联的
+
+pattern UniformExcitation $ patternTag $ dir -accel $ tsTag 
+pattern Plain             $ patternTag              $ tsTag
+"""                        加载模式的标签       加载模式中使用时间序列的标签
+timeSeries Linear 1 ;# 建立一个线性的时间序列
+pattern Plain 1 1 { ;# 建立一个荷载工况
+	load 1 5.0e3  ;# 给节点1加一个5kN的力
+}                  
+"""                       
+timeSeries Path 1 -dt 0.01 -filePath accel.txt ;# 创建地震加速度时间序列
+pattern UniformExcitation 1        1        -accel 1 -fact 9800 ;# 创建地震工况
+                        工况编号  时程编号
+
+timeSeries Linear $ tag   ***** 
+timeSeries Path $ tag -dt $ dt -filePath $ filePath <-factor $ cFactor> <-useLast> <-prependZero> <-startTime $ tStart>                   
 -----------------------------------------------------------------------------------------------------------------------------------------------
 recorder Node    -file dispx.txt   -time   -nodeRange  1 23945  -dof 1 disp
 recorder Node    -file dispy.txt   -time   -nodeRange  1 23945  -dof 2 disp
@@ -212,16 +230,17 @@ recorder Node    -file dispz.txt   -time   -nodeRange  1 23945  -dof 3 disp
 recorder Node    -file node1.out   -time   -node 1              -dof 1 2 3 disp
                     #输出文件名                               #节点1的X Y Z方向的位移
 recorder EnvelopeNode -file nodesD.out -time -node 1 2 3 4 -dof 1 2 disp ;   #求多个节点位移响应的包络值 
-recorder Node <-file $fileName> <-time> <-node ($node1 $node2 -dof ($dof1 $dof2 ...) $respType
+ recorder Node <-file $fileName> <-time> <-node ($node1 $node2 -dof ($dof1 $dof2 ...) $respType
 ###   $respType ：响应类型，如 disp—位移、vel—速度、accel—加速度 reaction—节点反力
-#  recorder Node -file nodesA.out -timeSeries 1 -time -node 1 2 3 4 -dof 1 accel
+ recorder Node -file nodesA.out -timeSeries 1 -time -node 1 2 3 4 -dof 1 accel
 #  对于UNIFORMexcitation分析，生成nodeA.out文件，包含节点1 2 3 4在x方向上的绝对加数度（地面运动加速度+相对加数度）注意，未提供timeseries且均匀激励进行分析，记录相对加数度。
 # recorder EnvelopeNode -file nodesD.out -time -node 2 -dof 1 2 3 disp
 6.7 -164.418 3.02 -0.00429913 4.54 -2.08274  
 5.58 243.224 12.26 0.00359666 5.6 2.88886
 5.58 243.224 3.02 0.00429913 5.6 2.88886
 记录节点2在x y z 方向的位移包络值 第一行为为负包络值 第二行为正包络值 第三行为前两者绝对值中的较大值
-# recorder EnvelopeNode -file nodesA.out -time -timeSeries 1 -node 1 2 3 4 -dof 1 accel                                              
+ recorder EnvelopeNode -file nodesA.out -time -timeSeries 1 -node 1 2 3 4 -dof 1 accel  
+"""在时程分析中 accel vel disp 输出都是相对位移，如果要得到accel的绝对值，要在定义中加入-timeseries 1    """
 --------------------------------------------------------------------------------------------------------------------------------------------------------                  
 recorder EnvelopeElement -file eleD.out -time -ele 2 3 4 localForce  #多个单元局部坐标下的单元力向量
 --------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -309,7 +328,13 @@ zerolength(零长度单元)
                                                                                 材料方向 1 2 3-分别沿局部x y z轴平移；4 5 6-分别绕局部x y z 轴旋转
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------                                                
 地震波中的时间步长为0.01s,若后面分析的步长取为0.005s,则opensees会根据地震波的加速度插值得到实际分析步的地震加数度。
-                                                
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+set numModes 12
+set lambda [eigen  $numModes]  # eigen命令用于求解特征值 12为特征值的数量
+set period "Periods.txt"
+set Periods [open $period "w"]
+puts $Periods " $lambda"
+close $Periods                                                
                                                 
                                                 
                                                 
