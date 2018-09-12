@@ -6,9 +6,11 @@ dispdisp(['运行时间：',num2str(toc)])
 
 2.创建保存输出文件的目录
 mkdir(Make Directory创建目录)创建目录时应保证新建的目录没有重名
+mkdir('F:\zzzzzzzzzzzzz\matlab_and_opensees_test\output22') %创建文件夹
 if { [file exists output] == 0 } {
 	  file mkdir output;
 }  
 # 如果文件夹output不存在，创建一个output文件夹。
 
-3.
+3.  which co.tcl 
+ 显示当前co.tcl工作目录
