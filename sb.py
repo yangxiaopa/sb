@@ -92,7 +92,14 @@ else:
 '''4.低纬度空间中指定局部坐标轴方向：有限单元法中，每个单元都有自己的局部坐标轴，若定义为零长度单元，则单元的局部坐标轴方向与整体坐标方向相同，若为非零长度单元，则单元局部轴为inode指向jnode方向
       但局部2轴的方向没有指定，在对twonodelink单元赋方向时，如果坐标数小于3，应对不存在的坐标值赋0.'''
 
-'''5. '''
+'''5.twonodelink的自由度耦合，如果不希望发生自由度耦合，应定义多个在1方向上的twonodelink单元，而不是使用一个单元的多个方向，可参考例题。 '''
+
+'''6.record输出，周期与振型，结构的位移和速度通常是相对于地面的相对位移和相对速度，而要与牛顿第二定律建立联系需关心结构的加数度为绝对加数度。
+recorder Node -file node.txt -node 1 -dof 1 accel输出的为相对加数度，recorder Node -file node.txt -timeSeries 1 -node 1 -dof 1 accel输出为绝对加数度'''
+
+'''7.拟时间输出，单元内力输出：recorder Element -file ele.txt -time -ele 1 force 
+    输出单元1的内力 第一列为拟时间 第二到第七列为单元受力 前三列为inode节点受的等效外力，后三列为jnode节点受的等效外力，分别按1 2 3 三个方向排序 这些力是定义在全局坐标系下的。还有localforce、basicforce等命令
+    force命令得到的等效力是建立在全局坐标系下的，localforce语句得到的等效力是建立在单元局部坐标系下的，basicforce命令输出局部坐标系下的轴力和两个端弯矩！'''
     *********************************************************************************************************************************************
 opensees(open system for earthquake engineering simulation)#面向对象的软件框架，采用有限元方法对地震工程进行仿真）
 开源软件，无限潜力。可用于非线性结构，岩土分析的丰富材料，单元库及分析手段。领先不断进步
@@ -208,9 +215,10 @@ eleLoad -ele     1 -type -beamUniform 0    -12173.5576171875
 load  1342         0.0000000000         0.0000000000    -79339.2265625000         0.0000000000         0.0000000000         0.0000000000 
 -----------------------------------------------------------------------------------------------------------------------------------------                  
 rigidDiaphragm 3       3     77     13      1     59      5     87      7     15      9     21     11     19     17     25     23    111    119     29     27     31    104     33     37     35     73     43     41     45     39    129     49    103     97     63     81     91                  
-rigidDiaphragm $perpDirn $masterNodeTag $slaveNodeTag1 $slaveNodeTag2
-  刚性隔板     刚性隔板方法为3   主节点 (刚心)     从节点1              从节点2      ……
+rigidDiaphragm  $perpDirn     $masterNodeTag  $slaveNodeTag1      $slaveNodeTag2
+  刚性隔板     刚性隔板方法为3   主节点 (刚心)      从节点1              从节点2      ……
 rigidDiaphragm 3 2 4 5 6;          #从节点4,5,6随主节点2做X-Y plan的平移和旋转   （采用刚性隔板模型时，需与constraint lagrange配合使用，否者运行出错）
+		  
 ---------------------------------------------------------------------------------------------------------------------------------------------                  
 element elasticBeamColumn $ eleTag $ iNode $ jNode $ A $ E $ G $ J $ Iy $ Iz $ transfTag 
 element elasticBeamColumn 10      16         18   1.125E+005  2.482E+004  1.034E+004   1.530E+009   1.898E+009 5.859E+008    10
@@ -464,7 +472,148 @@ ETABS 9.7.2>>>S2k文件>>>ETO>>>opensees的TCL文件（做适当修改）
 # 选择首层所有柱，将其分割成两端，选择首层所有柱下半段并指定截面“rigid”（材料为steel）并释放其I端（base那段）的弯矩M2 M3，上述操作为让eto在首层柱底生成零长度单元！                                                
                                                 
                                                 
-                                                
+*************************                    *******************************                    ********************************
+This tutorial will use the following portal frame as driving example:
+# SET UP ----------------------------------------------------------------------
+# units: kN, m, sec
+wipe;        ​​​​  # clear opensees model ------------------------清楚程序之前输入的数据
+# import procedure008.tcl supplied with NextFEM Designer
+source procedure008.tcl
+# required by procedures - they can run also for parallel analysis
+set pid 0
+file mkdir data;        ​​ ​​​​ # create data directory
+model basic -ndm 3 -ndf 6;  ​​ # 2 dimensions, 3 dof per node ------------- 指定三维六节点自由度体系
+set modelName "frame_ex"; # model name, best if equal to .tcl filename
+ 
+# define GEOMETRY -------------------------------------------------------------
+set LCol 3.0;    # column length
+set LBeam 6.0;   # beam length
+set Weight 1000.;   # superstructure weight
+ 
+# mechanical properties
+set fyk  [expr 235*pow(10,3)]
+set ftk   [expr 360*pow(10,3)]
+set Es  [expr 210000*pow(10,3)]
+set gammaM0  [expr 1.05]
+set fyd  [expr $fyk/$gammaM0]
+ 
+# calculated parameters
+set PCol $Weight;     # nodal dead-load weight per column
+set g 9.81;       ​​ ​​ ​​ ​​​​ # g acceleration
+set Mass [expr $PCol/$g];   # nodal mass
+ 
+# calculated geometry parameters
+set A  [expr 53.83*pow(10,-4)];   # cross-sectional area
+set Iy  [expr 3692.0*pow(10,-8)];  # Column moment of inertia
+set Iz  [expr 1336.0*pow(10,-8)]
+set d  [expr 190.0*pow(10,-3)]
+set bf  [expr 200.0*pow(10,-3)]
+set tw  [expr 6.5*pow(10,-3)]
+set tf  [expr 10.0*pow(10,-3)]
+ 
+# nodal coordinates:
+node 1 0 0 0;   # node coords. X, Y, Z
+node 2 0 $LCol ​​ 0  
+node 3 $LBeam 0 0
+node 4 $LBeam $LCol 0
+ 
+# Single point constraints -- Boundary Conditions
+fix 1 1 1 1 1 1 1;    # node DX DY RZ
+fix 3 1 1 1 1 1 1;
+fix 2 0 0 1 1 1 0 
+fix 4 0 0 1 1 1 0 
+ 
+# nodal masses:
+mass 2 $Mass $Mass 0. 0 0 0;  # node#, Mx My Mz, Mass=Weight/g, neglect rotational inertia at nodes
+mass 4 $Mass $Mass 0. 0 0 0
+ 
+# Define ELEMENTS & SECTIONS -------------------------------------------------------------
+set HE200A 1;  # assign a tag number to the column section
+set HE200ATemp 2 
+ 
+# MATERIAL parameters -------------------------------------------------------------------
+set steelMatID 1;      # material ID tag
+ 
+# -----------
+set fyk  [expr 275*pow(10,3)]
+set ftk   [expr 430*pow(10,3)]
+set Es  [expr 210000*pow(10,3)]
+set nus  [expr 0.3]
+set Gs  [expr $Es/2/(1+$nus)]
+set Gammas  [expr 78.5/pow(10,0)]
+set gammaM0  [expr 1.05]
+set fyd  [expr $fyk/$gammaM0]
+set Bs 0.01;      # strain-hardening ratio 
+set R0 18;      # control the transition from elastic to plastic branches
+set cR1 0.925;      # control the transition from elastic to plastic branches
+set cR2 0.15;      # control the transition from elastic to plastic branches
+ 
+uniaxialMaterial Steel02 $steelMatID $fyd $Es $Bs $R0 $cR1 $cR2;    # Menegotto-Pinto model
+ 
+# FIBER SECTION properties -------------------------------------------------------------
+ 
+set nfdw 5;       # number of fibers along web depth 
+set nftw 2;       # number of fibers along web thickness
+set nfbf 5;        # number of fibers along flange width 
+set nftf 2;        # number of fibers along flange thickness
+ ​​​​ 
+​​ set dw [expr $d - 2 * $tf]
+​​ set y1 [expr -$d/2]
+​​ set y2 [expr -$dw/2]
+​​ set y3 [expr ​​ $dw/2]
+​​ set y4 [expr ​​ $d/2]
+ ​​​​ 
+​​ set z1 [expr -$bf/2]
+​​ set z2 [expr -$tw/2]
+​​ set z3 [expr ​​ $tw/2]
+​​ set z4 [expr ​​ $bf/2]
+ ​​​​ 
+#  ​​ ​​ ​​ ​​ ​​ ​​ ​​ ​​ ​​ ​​ ​​ ​​ ​​ ​​ ​​ ​​ ​​ ​​ ​​ ​​ ​​ ​​ ​​ ​​ ​​​​ 
+section fiberSec ​​ $HE200ATemp {
+ ​​ ​​ ​​ ​​​​ # ​​ nfIJ  ​​ ​​​​ nfJK    ​​​​ yI  ​​ ​​ ​​​​ zI  ​​​​   yJ  ​​ ​​​​ zJ  ​​ ​​ ​​ ​​ ​​ ​​​​ yK  ​​​​ zK  ​​ ​​ ​​ ​​​​ yL  ​​ ​​​​ zL
+patch quadr ​​ $steelMatID $nfbf $nftf ​​   $y1 $z4  ​​​​ $y1 $z1  ​​​​ $y2 $z1  ​​​​ $y2 $z4
+patch quadr ​​ $steelMatID $nftw $nfdw  ​​ ​​ ​​​​ $y2 $z3  ​​​​ $y2 $z2  ​​​​ $y3 $z2  ​​​​ $y3 $z3
+patch quadr ​​ $steelMatID $nfbf $nftf ​​   $y3 $z4  ​​​​ $y3 $z1  ​​​​ $y4 $z1  ​​​​ $y4 $z4
+ ​​​​ } 
+set string1 P
+set string2 Mz
+set string3 Vy
+section Aggregator $HE200A $steelMatID $string1 $steelMatID $string2 $steelMatID $string3 -section $HE200ATemp
+ 
+# define geometric transformation: performs a linear geometric transformation of beam stiffness and resisting force from the basic system to the global-coordinate system
+set ColTransfTag 1;    # associate a tag to column transformation
+geomTransf Linear $ColTransfTag 0 0 1 ;  
+set BeamTransfTag 2;    # associate a tag to column transformation
+geomTransf Linear $BeamTransfTag 0 0 1 ;  
+ 
+# element connectivity:
+set numIntgrPts 5;           # number of integration points for force-based element
+element nonlinearBeamColumn 1 1 2 $numIntgrPts $HE200A $ColTransfTag; # self-explanatory when using variables
+element nonlinearBeamColumn 2 3 4 $numIntgrPts $HE200A $ColTransfTag
+element nonlinearBeamColumn 3 2 4 $numIntgrPts $HE200A $BeamTransfTag
+ 
+# define GRAVITY LOAD -------------------------------------------------------------
+pattern Plain 1 Linear {
+ ​​ ​​​​ eleLoad -ele 3 -type -beamUniform -20 0; # distributed superstructure-weight on beam
+}
+ 
+# define damping proportional to masses and to 1st mode
+MDamping 0.05 1
+ 
+# parameters for the subsequent analyses
+set Tol 1.0e-3;   # convergence tolerance for test
+set Tmax   15.0
+set dt   0.005
+set filePath  "record10.30.dat"; # string with the 2 columns plain text seismic record
+set ampl   1
+set dir   1
+ 
+# non-linear static analysis for applying vertical loads
+NonLinearStatic $Tol 0.1 10 $modelName
+# modal analysis
+Modal 3 1 $modelName 1
+# dynamic analysis
+DynamicAn $Tmax $dt $filePath 1 $dir $Tol $ampl $modelName						 
                                                 
                                                 
                                                 
