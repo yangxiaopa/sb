@@ -367,17 +367,24 @@ set lambdaI [lindex $lambdaN [expr $nEigenI-1]]; #提取第一阶特征值
 set lambdaJ [lindex $lambdaN [expr $nEigenJ-1]]; #提取第二阶特征值
 set omegaI [expr pow($lambdaI,0.5)]; #从特征值求解圆频率w1
 set omegaJ [expr pow($lambdaJ,0.5)]; #从特征值求解圆频率w2
-set alphaM [expr $xDamp*(2*$omegaI*$omegaJ)/($omegaI+$omegaJ)];  
-set betaKcurr [expr 2.*$xDamp/($omegaI+$omegaJ)];   
-rayleigh $alphaM $betaKcurr 0 0 						 
+set alphaM [expr $xDamp*(2*$omegaI*$omegaJ)/($omegaI+$omegaJ)]; #质量比例系数 
+set betaKcurr [expr 2.*$xDamp/($omegaI+$omegaJ)];   #刚度比例系数
+rayleigh $alphaM $betaKcurr 0 0      #定义瑞利阻尼，只需填写α和β，其他为0						 
 '''                                             
 lindex命令返回list列表中的第index元素，替代时元素从0开始（也就是说索引就是第一个元素）
 pow(x , y)函数为幂运算，求解x的y幂次方						 
 克拉夫《结构动力学》12-5 比例粘滞阻尼矩阵的建立：假设应用于两个控制频率的阻尼比相同，即 ξm=ξn=ξ 给相质量与刚度的相关系数 a0=2ξω1ω2/（ω1+ω2）， a1=2ξ/（ω1+ω2）
 					     将上述比例阻尼矩阵用于工程实践时，建议ω1取多自由度体系的基频，而ω2则在对动力反应有显著贡献的高阶振型中选取。这样
-					     可保证对于这两个振型可以得到所需要的阻尼比（ξ1=ξn=ξ），
+					     可保证对于这两个振型可以得到所需要的阻尼比（ξ1=ξn=ξ），在这两个指定频率之间所对应的振型将具有较低的阻尼比，而频率
+					     大于ω2的所有振型的阻尼比将大于ξn，并随频率的增加单调增加，最终结构为具有很高频率的振型反应因其高阻尼比而被有效消除。
 *******************************************  TCL脚本语言的语法    ********************************************************************************                                                
 tcl基于字符串的命令语言，由 新行 或 分号 ；分隔的命令组成
+set foo 0
+set bar 
+注释
+set foo 0; #******
+						 
+						 
 set命令为变量赋值 #  set xdamp 0.05                                                
 命令替换 如   # set lambdaN [eigen [expr $nEigen]]                                                
 数学表达式   # set pi [expr 2*asin(1.0)]
@@ -425,9 +432,9 @@ algorithm $algotype
 set IDloadTag 1001;   # 工况编号
 set iGMfile "GMX.txt"; # 地震波文件
 set iGMdirection "1"; # 定义地震波输入方向
-set iGMfact "10"; # 定义放大系数
-set dt 0.01; # 定义时间步
-set GMfatt [expr $iGMfact];  
+set iGMfact "10"; # 定义地震波峰值放大系数
+set dt 0.01; # 定义地震波时间步
+set GMfatt [expr $iGMfact]; #   
 set AccelSeries "Series -dt $dt -filePath $iGMfile -factor $GMfatt";
 pattern UniformExcitation $IDloadTag $iGMdirection -accel $AccelSeries;                                                
 pattern UniformExcitation    1001         1        -accel  -dt 0.01 -filepath GMX.txt -factor 10                                          
@@ -436,12 +443,19 @@ pattern UniformExcitation    1001         1        -accel  -dt 0.01 -filepath GM
 
 #UniformExcitation模式允许用户对作用于特定方向的模型应用均匀激励。命令如下：
 #pattern UniformExcitation $ patternTag $ dir -accel $ tsTag <-vel0 $ vel0> <-fact $ cFactor>                                                
-                                                     $ tsTag	定义加速历史的TimeSeries系列的标记。
+                                                     $ tsTag	定义加速历史的TimeSeries系列的标记。						 
 ---------------------------------------------------------------------------------------------------------------------------
-                                                
-                                                
-                                                
-                                                
+set IDloadTag 400;                                                 
+set iGMfile "GMX.txt;
+set iGMdirection "1";
+set iGMfact "10";						 
+set dt 0.01;                                                
+foreach GMdirection $iGMdirection GMfile $iGMfile GMfact $iGMfact { 
+incr IDloadTag; 
+set GMfatt [expr 1*$iGMfact]; 
+set AccelSeries "Series -dt $dt -filePath $iGMfile -factor $GMfatt";
+pattern UniformExcitation $IDloadTag $GMdirection -accel $AccelSeries; 
+}    多维地震波的输入标准格式                                                
                                                 
                                                 
                                                 
