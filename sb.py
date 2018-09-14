@@ -217,7 +217,8 @@ load  1342         0.0000000000         0.0000000000    -79339.2265625000       
 rigidDiaphragm 3       3     77     13      1     59      5     87      7     15      9     21     11     19     17     25     23    111    119     29     27     31    104     33     37     35     73     43     41     45     39    129     49    103     97     63     81     91                  
 rigidDiaphragm  $perpDirn     $masterNodeTag  $slaveNodeTag1      $slaveNodeTag2
   刚性隔板     刚性隔板方法为3   主节点 (刚心)      从节点1              从节点2      ……
-rigidDiaphragm 3 2 4 5 6;          #从节点4,5,6随主节点2做X-Y plan的平移和旋转   （采用刚性隔板模型时，需与constraint lagrange配合使用，否者运行出错）
+rigidDiaphragm 3 2 4 5 6;          #从节点4,5,6随主节点2做X-Y plan的平移和旋转   （采用刚性隔板模型时，需与constraint lagrange配合使用，否者运行出错）其中
+#  $perpdim表示刚性隔板的方法，如楼板刚性隔板的平移方向为u1 u2即1-2平面，改值应该为3 
 		  
 ---------------------------------------------------------------------------------------------------------------------------------------------                  
 element elasticBeamColumn $ eleTag $ iNode $ jNode $ A $ E $ G $ J $ Iy $ Iz $ transfTag 
@@ -355,10 +356,23 @@ set period "Periods.txt"
 set Periods [open $period "w"]
 puts $Periods " $lambda"
 close $Periods                                                
-                                                
-                                                
-                                                
-                                                
+-----------------------------------------------------------------------------------------------------------------------------------------------
+opensees里结构采用的是瑞利阻尼：
+'''						 
+set xDamp 0.05;  #设置阻尼比为0.05
+set nEigenI 1;  #主振型1为第一振型
+set nEigenJ 2;  #主振型2为第二振型
+set lambdaN [eigen [expr $nEigenJ]]; #求解两阶振型的特征值
+set lambdaI [lindex $lambdaN [expr $nEigenI-1]]; #提取第一阶特征值
+set lambdaJ [lindex $lambdaN [expr $nEigenJ-1]]; #提取第二阶特征值
+set omegaI [expr pow($lambdaI,0.5)]; #从特征值求解圆频率1
+set omegaJ [expr pow($lambdaJ,0.5)]; #从特征值求解圆频率2
+set alphaM [expr $xDamp*(2*$omegaI*$omegaJ)/($omegaI+$omegaJ)]; 
+set betaKcurr [expr 2.*$xDamp/($omegaI+$omegaJ)];   
+rayleigh $alphaM $betaKcurr 0 0 						 
+'''                                             
+lindex命令返回list列表中的第index元素，替代时元素从0开始（也就是说索引就是第一个元素）
+						 
                                                 
 *******************************************  TCL脚本语言的语法    ********************************************************************************                                                
 tcl基于字符串的命令语言，由 新行 或 分号 ；分隔的命令组成
