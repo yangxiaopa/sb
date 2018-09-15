@@ -100,6 +100,12 @@ recorder Node -file node.txt -node 1 -dof 1 accel输出的为相对加数度，r
 '''7.拟时间输出，单元内力输出：recorder Element -file ele.txt -time -ele 1 force 
     输出单元1的内力 第一列为拟时间 第二到第七列为单元受力 前三列为inode节点受的等效外力，后三列为jnode节点受的等效外力，分别按1 2 3 三个方向排序 这些力是定义在全局坐标系下的。还有localforce、basicforce等命令
     force命令得到的等效力是建立在全局坐标系下的，localforce语句得到的等效力是建立在单元局部坐标系下的，basicforce命令输出局部坐标系下的轴力和两个端弯矩！'''
+
+'''8.坐标转换：（1）element elasticBeamColumn $eleTag $iNode $jNode $A $E $G $J $Iy $Iz $transfTag  和（2）geomTransf Linear  $transfTag  $vecxzX $vecxzY $vecxzZ 局部坐标轴的定义x y z 的定义
+                   element命令里inode-jnode定义了x轴及其方向，然后vecxz是用户选择的不和x轴平行的任意向量，这两个向量叉乘得到y轴，x轴和y轴再叉乘得到z轴，这就是局部坐标。（1)element命令已经定义了x轴，只需
+		   给出vecxz在整体坐标系下的坐标，就可以知道局部坐标系所有的方向，因此（2）geom命令里$vecxzX $vecxzY $vecxzZ 三分量就是向量vecxz在整体坐标系下的坐标。 
+		   也就是：element里定义x轴，geom里定了向量vecxz，这两个向量定了局部坐标系。需注意，$transfTag代表局部坐标轴矢量编号（vecxz)编号，所以element的$transfTag和geom的$transfTag要对应起来，
+		   为了方便明白，一般每一个element都选一个单独编号。链接###  https://blog.csdn.net/weixin_39233778/article/details/79365694'''
     *********************************************************************************************************************************************
 opensees(open system for earthquake engineering simulation)#面向对象的软件框架，采用有限元方法对地震工程进行仿真）
 开源软件，无限潜力。可用于非线性结构，岩土分析的丰富材料，单元库及分析手段。领先不断进步
