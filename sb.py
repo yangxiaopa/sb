@@ -238,12 +238,26 @@ pattern 定义荷载工况对象，每个pattern 是一个与timeseries相关联
 
 pattern UniformExcitation $ patternTag $ dir -accel $ tsTag 
 pattern Plain             $ patternTag              $ tsTag
-"""                        加载模式的标签       加载模式中使用时间序列的标签
+                        加载模式的标签       加载模式中使用时间序列的标签
+'''		  
 timeSeries Linear 1 ;# 建立一个线性的时间序列
 pattern Plain 1 1 { ;# 建立一个荷载工况
 	load 1 5.0e3  ;# 给节点1加一个5kN的力
-}                  
-"""                       
+}
+
+集中荷载定义：
+pattern plain 1 linear{
+load $nodeTag $Fx $Fy $Fz $Mx $My $Mz
+#...
+}
+均布荷载：
+pattern Plain 1 Linear {
+eleLoad -ele  1                       -type -beamUniform 0    -12173.5576171875 
+eleLoad -ele $eleTag1 <$eleTag2 ....> -type -beamUniform $Wy         $Wz           <$Wx>
+                                             均布线荷载
+#...
+}
+'''
 timeSeries Path 1 -dt 0.01 -filePath accel.txt ;# 创建地震加速度时间序列
 pattern UniformExcitation 1        1        -accel 1 -fact 9800 ;# 创建地震工况
                         工况编号  时程编号
@@ -267,11 +281,11 @@ recorder EnvelopeNode -file nodesD.out -time -node 1 2 3 4 -dof 1 2 disp ;   #�
 5.58 243.224 3.02 0.00429913 5.6 2.88886
 记录节点2在x y z 方向的位移包络值 第一行为为负包络值 第二行为正包络值 第三行为前两者绝对值中的较大值
  recorder EnvelopeNode -file nodesA.out -time -timeSeries 1 -node 1 2 3 4 -dof 1 accel  
-"""在时程分析中 accel vel disp 输出都是相对位移，如果要得到accel的绝对值，要在定义中加入-timeseries 1    """
+"""在时程分析中 accel vel disp 输出都是相对位移，如果要得到accel的绝对值，要在定义中加入-timeseries 1  """
 						 
-						 
-						 
-						 
+-time 表示第一列输出荷载倍数或时程的时间值						 
+recorder Element -file ele0.txt -time -eleRange 1 46 localForce    #表示输出1~46号单元的 局部坐标系下 的单元内力到文件ele0.txt。						 
+recorder Node -file eigen1_node0.out -time -nodeRange 1 28 -dof 1 2 3 "eigen 1"  #输出振型的形状						 
 --------------------------------------------------------------------------------------------------------------------------------------------------------                  
 recorder EnvelopeElement -file eleD.out -time -ele 2 3 4 localForce  #多个单元局部坐标下的单元力向量
 --------------------------------------------------------------------------------------------------------------------------------------------------------
