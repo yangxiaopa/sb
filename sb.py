@@ -82,11 +82,11 @@ else:
     
  '''opensees为开源软件，可回归到有限元最基础的部分，有限元软件只是分析运行的途径，有限元理论才是结构分析的核心。掌握其中原理才能灵活运用有限元软件
                              掌握结构概念和有限元软件，借助软件自行研究'''
-			    '''1. 当一结构为弹性，分析很快可结束，但当结构非线性较强时，可能发生不收敛的情况，如将uniaxialMaterial Elastic 1 1.0e5 
-			     改为uniaxialMaterial Steel01 1 200. 1.0e5 0.1时增加材料的非线性，单元内力达到200后刚度退化为初始的0.1倍再运行收敛更加困难
-			     可将analyze 3000 0.01改为analyze 6000 0.005即缩小每一分析步的步长，模型收敛'''  
+  '''1. 当一结构为弹性，分析很快可结束，但当结构非线性较强时，可能发生不收敛的情况，如将uniaxialMaterial Elastic 1 1.0e5 
+     改为uniaxialMaterial Steel01 1 200. 1.0e5 0.1时增加材料的非线性，单元内力达到200后刚度退化为初始的0.1倍再运行收敛更加困难
+     可将analyze 3000 0.01改为analyze 6000 0.005即缩小每一分析步的步长，模型收敛'''  
 '''2.计算时间与收敛性平衡：减小分析步长可改善收敛性，但会增加计算时间，两者相互矛盾  在地震作用较小的时段，结构非线性发展较小，可用较大步长快速算过，但在地震
-         作用较大的时段结构可能产生强非线性，所以要用足够小的步长来保证收敛。为了平衡模型分析总时间和模型分析收敛性，可在运算过程中动态改变步长，以达到平衡'''
+ 作用较大的时段结构可能产生强非线性，所以要用足够小的步长来保证收敛。为了平衡模型分析总时间和模型分析收敛性，可在运算过程中动态改变步长，以达到平衡'''
 
 '''3.讲解在opensees中用zerolength或twonodelink单元来模拟只受压单元，避免节点顺序的影响：http://www.hanlindong.com/2017/opensees-5questions-1/ '''
 '''4.低纬度空间中指定局部坐标轴方向：有限单元法中，每个单元都有自己的局部坐标轴，若定义为零长度单元，则单元的局部坐标轴方向与整体坐标方向相同，若为非零长度单元，则单元局部轴为inode指向jnode方向
@@ -98,14 +98,14 @@ else:
 recorder Node -file node.txt -node 1 -dof 1 accel输出的为相对加数度，recorder Node -file node.txt -timeSeries 1 -node 1 -dof 1 accel输出为绝对加数度'''
 
 '''7.拟时间输出，单元内力输出：recorder Element -file ele.txt -time -ele 1 force 
-    输出单元1的内力 第一列为拟时间 第二到第七列为单元受力 前三列为inode节点受的等效外力，后三列为jnode节点受的等效外力，分别按1 2 3 三个方向排序 这些力是定义在全局坐标系下的。还有localforce、basicforce等命令
-    force命令得到的等效力是建立在全局坐标系下的，localforce语句得到的等效力是建立在单元局部坐标系下的，basicforce命令输出局部坐标系下的轴力和两个端弯矩！'''
+输出单元1的内力 第一列为拟时间 第二到第七列为单元受力 前三列为inode节点受的等效外力，后三列为jnode节点受的等效外力，分别按1 2 3 三个方向排序 这些力是定义在全局坐标系下的。还有localforce、basicforce等命令
+force命令得到的等效力是建立在全局坐标系下的，localforce语句得到的等效力是建立在单元局部坐标系下的，basicforce命令输出局部坐标系下的轴力和两个端弯矩！'''
 
 '''8.坐标转换：（1）element elasticBeamColumn $eleTag $iNode $jNode $A $E $G $J $Iy $Iz $transfTag  和（2）geomTransf Linear  $transfTag  $vecxzX $vecxzY $vecxzZ 局部坐标轴的定义x y z 的定义
-                   element命令里inode-jnode定义了x轴及其方向，然后vecxz是用户选择的不和x轴平行的任意向量，这两个向量叉乘得到y轴，x轴和y轴再叉乘得到z轴，这就是局部坐标。（1)element命令已经定义了x轴，只需
-		   给出vecxz在整体坐标系下的坐标，就可以知道局部坐标系所有的方向，因此（2）geom命令里$vecxzX $vecxzY $vecxzZ 三分量就是向量vecxz在整体坐标系下的坐标。 
-		   也就是：element里定义x轴，geom里定了向量vecxz，这两个向量定了局部坐标系。需注意，$transfTag代表局部坐标轴矢量编号（vecxz)编号，所以element的$transfTag和geom的$transfTag要对应起来，
-		   为了方便明白，一般每一个element都选一个单独编号。链接###  https://blog.csdn.net/weixin_39233778/article/details/79365694'''
+element命令里inode-jnode定义了x轴及其方向，然后vecxz是用户选择的不和x轴平行的任意向量，这两个向量叉乘得到y轴，x轴和y轴再叉乘得到z轴，这就是局部坐标。（1)element命令已经定义了x轴，只需
+给出vecxz在整体坐标系下的坐标，就可以知道局部坐标系所有的方向，因此（2）geom命令里$vecxzX $vecxzY $vecxzZ 三分量就是向量vecxz在整体坐标系下的坐标。 
+也就是：element里定义x轴，geom里定了向量vecxz，这两个向量定了局部坐标系。需注意，$transfTag代表局部坐标轴矢量编号（vecxz)编号，所以element的$transfTag和geom的$transfTag要对应起来，
+为了方便明白，一般每一个element都选一个单独编号。链接###  https://blog.csdn.net/weixin_39233778/article/details/79365694'''
     *********************************************************************************************************************************************
 opensees(open system for earthquake engineering simulation)#面向对象的软件框架，采用有限元方法对地震工程进行仿真）
 开源软件，无限潜力。可用于非线性结构，岩土分析的丰富材料，单元库及分析手段。领先不断进步
@@ -188,7 +188,7 @@ element zeroLength 260        117       126      -mat 1 1     -dir 1 2
 element zeroLength 5          2          11      -mat 1 1 1   -dir 4 5 6                  
         零长度单元  单元标签   i端节点  j端节点  单轴材料的标签    材料方向
 （节点117和126之间的桁架标签260在连接单元1 2自由度方向采用UniaxialMaterial本构曲线1）
- (zerolength元素对象由同一位置上两节点定义，可通过多个UniaxialMaterial对象连接，表示元素的力-变形关系) 零长度单元建模时为零长度，构件变形时为单位长度
+(zerolength元素对象由同一位置上两节点定义，可通过多个UniaxialMaterial对象连接，表示元素的力-变形关系) 零长度单元建模时为零长度，构件变形时为单位长度
 #equalDOF 2 11 1 2 3 
 #element zeroLength 5 2 11 -mat 1 1 1 -dir 4 5 6
 ####强制令节点11方向1 2 3的自由度（所有平动位移）等于节点2方向1 2 3的自由度，节点11 2的平动值相等，转动值不相等，也就是空间上的铰接。定义标签为5的零长度单元，其节点2 11 坐标相同，1 1 1 为预先定义的单轴材料标签，4 5 6代表局部坐标轴x y z轴的转动，由于材料4 5 6 方向上的材料1刚度很小，该零长度单元可以轻易发生其局部坐标轴x y z 轴的转动变形！
@@ -211,25 +211,25 @@ uniaxialMaterial Steel01 4               250                206000            0.
 ------------------------------------------------------------------------------------------------------------------------                  
 geomTransf PDelta     1       1.0000000       0.0000000       0.0000000
 geomTransf Linear $ transfTag $ vecxzX $ vecxzY $ vecxzZ  
-geomTransf Linear 1 1.000 0.000 0.000 
-               转换类型  局部坐标轴矢量编号     局部坐标轴的方向矢量值
+geomTransf Linear               1              1.000 0.000 0.000 
+          转换类型       局部坐标轴矢量编号     局部坐标轴的方向矢量值
 (几何变换命令用于构造坐标变换对象，将梁单元刚度和抵抗力从局部坐标系转换为全局坐标系)                                   
 -------------------------------------------------------------------------------------------------------------------------                  
 element dispBeamColumn 10336     1 11186     3      10000     1 -mass      5625.0000000000                  
 element dispBeamColumn 40067 23305  6367     3   82640000    81 -mass         0.0000010000
 eleLoad -ele     1 -type -beamUniform 0    -12173.5576171875                  
-load  1342         0.0000000000         0.0000000000    -79339.2265625000         0.0000000000         0.0000000000         0.0000000000 
+load  1342         0.0000000000         0.0000000000    -79339.2265625000         0.0000000000       0.0000000000       0.0000000000 
 -----------------------------------------------------------------------------------------------------------------------------------------                  
 rigidDiaphragm 3       3     77     13      1     59      5     87      7     15      9     21     11     19     17     25     23    111    119     29     27     31    104     33     37     35     73     43     41     45     39    129     49    103     97     63     81     91                  
 rigidDiaphragm  $perpDirn     $masterNodeTag  $slaveNodeTag1      $slaveNodeTag2
   刚性隔板     刚性隔板方法为3   主节点 (刚心)      从节点1              从节点2      ……
-rigidDiaphragm 3 2 4 5 6;          #从节点4,5,6随主节点2做X-Y plan的平移和旋转   （采用刚性隔板模型时，需与constraint lagrange配合使用，否者运行出错）其中
-#  $perpdim表示刚性隔板的方法，如楼板刚性隔板的平移方向为u1 u2即1-2平面，改值应该为3 
+rigidDiaphragm 3 2 4 5 6; #从节点4,5,6随主节点2做X-Y plan的平移和旋转   （采用刚性隔板模型时，需与constraint lagrange配合使用，否者运行出错）
+#  其中$perpdim表示刚性隔板的方法，如楼板刚性隔板的平移方向为u1 u2即1-2平面，改值应该为3 
 		  
 ---------------------------------------------------------------------------------------------------------------------------------------------                  
 element elasticBeamColumn $ eleTag $ iNode $ jNode $ A $ E $ G $ J $ Iy $ Iz $ transfTag 
 element elasticBeamColumn 10      16         18   1.125E+005  2.482E+004  1.034E+004   1.530E+009   1.898E+009 5.859E+008    10
-                       单元标签  单元始点  单元终点  单元截面积   弹性模量      剪切模量    截面惯性扭矩    截面y/z惯性矩Iy/Iz    局部坐标轴编号
+                       单元标签  单元始点  单元终点  单元截面积   弹性模量      剪切模量    截面惯性扭矩    截面y/z惯性矩Iy/Iz  局部坐标轴编号
 -------------------------------------------------------------------------------------------------------------------------------------------- 
 pattern UniformExcitation $IDloadTag $iGMdirection -accel $AccelSeries;
 #uniformexcitation 模式用于定义施加指定方向的加速度记录，如地震加速度时程文件。
@@ -260,8 +260,8 @@ recorder EnvelopeNode -file nodesD.out -time -node 1 2 3 4 -dof 1 2 disp ;   #�
  recorder Node <-file $fileName> <-time> <-node ($node1 $node2 -dof ($dof1 $dof2 ...) $respType
 ###   $respType ：响应类型，如 disp—位移、vel—速度、accel—加速度 reaction—节点反力
  recorder Node -file nodesA.out -timeSeries 1 -time -node 1 2 3 4 -dof 1 accel
-#  对于UNIFORMexcitation分析，生成nodeA.out文件，包含节点1 2 3 4在x方向上的绝对加数度（地面运动加速度+相对加数度）注意，未提供timeseries且均匀激励进行分析，记录相对加数度。
-# recorder EnvelopeNode -file nodesD.out -time -node 2 -dof 1 2 3 disp
+#对于UNIFORMexcitation分析，生成nodeA.out文件，包含节点1 2 3 4在x方向上的绝对加数度（地面运动加速度+相对加数度）注意，未提供timeseries且均匀激励进行分析，记录相对加数度。
+#recorder EnvelopeNode -file nodesD.out -time -node 2 -dof 1 2 3 disp
 6.7 -164.418 3.02 -0.00429913 4.54 -2.08274  
 5.58 243.224 12.26 0.00359666 5.6 2.88886
 5.58 243.224 3.02 0.00429913 5.6 2.88886
@@ -379,11 +379,12 @@ rayleigh $alphaM $betaKcurr 0 0      #定义瑞利阻尼，只需填写α和β�
 '''                                             
 lindex命令返回list列表中的第index元素，替代时元素从0开始（也就是说索引就是第一个元素）
 pow(x , y)函数为幂运算，求解x的y幂次方						 
-克拉夫《结构动力学》12-5 比例粘滞阻尼矩阵的建立：假设应用于两个控制频率的阻尼比相同，即 ξm=ξn=ξ 给相质量与刚度的相关系数 a0=2ξω1ω2/（ω1+ω2）， a1=2ξ/（ω1+ω2）
-					     将上述比例阻尼矩阵用于工程实践时，建议ω1取多自由度体系的基频，而ω2则在对动力反应有显著贡献的高阶振型中选取。这样
-					     可保证对于这两个振型可以得到所需要的阻尼比（ξ1=ξn=ξ），在这两个指定频率之间所对应的振型将具有较低的阻尼比，而频率
-					     大于ω2的所有振型的阻尼比将大于ξn，并随频率的增加单调增加，最终结构为具有很高频率的振型反应因其高阻尼比而被有效消除。
-*******************************************  TCL脚本语言的语法    ********************************************************************************                                                
+克拉夫《结构动力学》12-5 比例粘滞阻尼矩阵的建立：
+	假设应用于两个控制频率的阻尼比相同，即 ξm=ξn=ξ 给相质量与刚度的相关系数 a0=2ξω1ω2/（ω1+ω2）， a1=2ξ/（ω1+ω2）
+	将上述比例阻尼矩阵用于工程实践时，建议ω1取多自由度体系的基频，而ω2则在对动力反应有显著贡献的高阶振型中选取。这样
+	可保证对于这两个振型可以得到所需要的阻尼比（ξ1=ξn=ξ），在这两个指定频率之间所对应的振型将具有较低的阻尼比，而频率
+	大于ω2的所有振型的阻尼比将大于ξn，并随频率的增加单调增加，最终结构为具有很高频率的振型反应因其高阻尼比而被有效消除。
+*******************************************  TCL脚本语言的语法    ************************************************************                                                
 tcl基于字符串的命令语言，由 新行 或 分号 ；分隔的命令组成
 set foo 0
 set bar 
@@ -451,6 +452,10 @@ pattern UniformExcitation    1001         1        -accel  -dt 0.01 -filepath GM
 #pattern UniformExcitation $ patternTag $ dir -accel $ tsTag <-vel0 $ vel0> <-fact $ cFactor>                                                
                                                      $ tsTag	定义加速历史的TimeSeries系列的标记。						 
 ---------------------------------------------------------------------------------------------------------------------------
+set iGMfile "H-E01140 H-E01140" ;		# ground-motion filenames, should be different files
+set iGMdirection "1 3";			# ground-motion directions
+set iGMfact "1.5 0.75";			# ground-motion scaling factor
+
 set IDloadTag 400;                                                 
 set iGMfile "GMX.txt;
 set iGMdirection "1";
@@ -462,7 +467,7 @@ set GMfatt [expr 1*$iGMfact];
 set AccelSeries "Series -dt $dt -filePath $iGMfile -factor $GMfatt";
 pattern UniformExcitation $IDloadTag $GMdirection -accel $AccelSeries; 
 }    多维地震波的输入标准格式                                                
-                                                
+----------------------------------------------------------------------------------------------------------------------------------------                                                
                                                 
                                                 
                                                 
