@@ -371,9 +371,9 @@ Variable Transient  用于可变时间步长的瞬态分析
 """ 
 ---------------------------------------------------------------------------------------------------------------------------------------
 #push-over
-						 
+1.重力加载 （力控制）						 
 loadconst -time 0.0; # sets loads constraint and resets time to be 0.0
-						 
+2.水平位移加载 （位移控制）						 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------                                                 
 zerolength(零长度单元)                                                
 #此命令用于构造zeroLength元素对象，该对象由同一位置的两个节点定义。节点由多个UniaxialMaterial对象连接，以表示元素的力 - 变形关系。
@@ -384,10 +384,10 @@ zerolength(零长度单元)
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 set numModes 12
 set lambda [eigen  $numModes]  # eigen命令用于求解特征值 12为特征值的数量
-set period "Periods.txt"
-set Periods [open $period "w"]
-puts $Periods " $lambda"
-close $Periods                                                
+set period "Periods.txt"； #保存计算特征值
+set Periods [open $period "w"]；#打开文本文件进行记录
+puts $Periods " $lambda"； #记录特征值数据至文本中
+close $Periods；#记录完成，关闭文本文件                                                
 -----------------------------------------------------------------------------------------------------------------------------------------------
 opensees里结构采用的是瑞利阻尼：
 '''						 
@@ -423,8 +423,9 @@ set命令为变量赋值 #  set xdamp 0.05
 数学表达式   # set pi [expr 2*asin(1.0)]
                   
 tcl允许打开文件以读入和写出
-set file [open tmp.out w];
-puts $file1 "calling tcl ok "                                                
+set file [open tmp.out w]; #将文件tmp.out打开并写入
+puts $file1 "calling tcl ok "  #puts与后面内容必须有一空格，便于解释器能识别
+puts stdout "Hello, world!";  #stdout使程序在标准输出设备中打印						 
 close $file1
                                                 
                                                 
@@ -432,8 +433,38 @@ puts [format "%.2f" $b] #输出保留两位小数的形式。
 $ :为变量置换符号。
 expr : 进行数学运算都要使用expr命令执行。
 puts [format "%.2f" $sqt]：为输出的简洁性，将结果保留2位小数。                  
-                  
-                  
+
+字符串表示
+set myVariable "hello world"
+puts $myVariable；						 
+set myVariable {hello world}
+puts $myVariable；#当我们要表示多个字符串时，可使用双引号或大括号，与其他语言不同，在tcl中当单个单词不需要双引号。
+						 
+列表
+set myVariable {red green blue}
+puts [lindex $myVariable 2]
+blue						 
+set myVariable "red green blue"
+puts [lindex $myVariable 1]；#列表可用双引号或大括号来表示						 
+green						 
+						 
+更改精度
+set variableA "10"
+set tcl_precision 5；#使用tcl_precision特殊变量来更改精度。
+set result [expr $variableA / 9.0];
+puts $result 						 
+1.1111						 
+						 
+运算符
++ - * / %(取余数)；#算术运算符
+==（检查两个操作数的值是否相等）  ！=（检查两个操作数的值是否不等） >      <     >=        <=     #关系运算符						 
+if { [file exists output] == 0 } {
+	  file mkdir output;
+}						 
+&&(and) ||(or) !(not)  #逻辑运算符
+						 
+						 
+                 
 
                                                 
                                                 
