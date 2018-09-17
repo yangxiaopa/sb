@@ -301,7 +301,8 @@ numberer Plain #节点自由度编号采用输入节点的顺序。
 # plain numberer # reverse cuthill-mckee numberer  # alternative minimum degree numberer 
 ---------------------------------------------------------------------------------------------------------------------------------
 #system ProfileSPD;
-#system SparseSYM	
+#system SparseSYM
+system BandGeneral; #矩阵带宽采用的一种处理方法						 
 system CulaSparse *************************opensees-gpu新增加算法*****************#                                          
 #BandSPD SOE    #ProfileSPD SOE   #SuperLU SOE    #UmfPack SOE    #FullGeneral     #SparseSYM SOE   #Mumps     #Cusp
 # BandGeneral SOE #bandgeneral类对象用于非对称的带状矩阵
@@ -325,7 +326,7 @@ Fixed Number of Iterations
 """                                                
 ----------------------------------------------------------------------------------------------------------------------------------------                                                
 algorithm NewtonLineSearch 0.75;
-                                                
+algorithm linear； #迭代算法采用线性法，适用于弹性分析                                                
 algorithm newton; # 用增量迭代法进行非线性方程组求解，将外荷载施加划分为若干加载步，在每一级荷载步中进行迭代计算，使每一级增量步中计算误差减小很小范围。                                                
 algorithm 命令用于构造一个SolutionAlgorithm对象，该对象确定解决非线性方程所用步骤的顺序。
 """
@@ -339,7 +340,9 @@ BFGS Algorithm
 Broyden Algorithm
 """                                                
 -------------------------------------------------------------------------------------------------------------------------------------------------------------                                                
-integrator LoadControl 0.2;                                                
+integrator LoadControl 0.2;
+integrator LoadControl 0.01； #荷载采用力控制模式，每级荷载增量为0.01P
+integrator DisplacementControl 5 3 -0.1; #检测节点5 3自由度变形 每步位移为-0.1						 
 integrator 用于构造integrator对象，integrator对象确定方程对象系统中各项含义                                                
 """                                                
 Static Integrators: #静态分析器
@@ -358,14 +361,19 @@ Explicit Difference
 integrator Newmark 0.5 0.25                                                 
 """                                                
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------                                                
-analysis Static
-analyze 5                                                
+analysis Static；#静力分析
+analyze 5；#增量荷载的上限（5步）                                                
 analysis用于构造analysis对象，该分析对象由分析人员之前创建的组建对象构建的，所有当前可用的分析对象都"采用增量式"解决方案                                                
 """                                                
 static  用于静态分析
 Transient  用于恒定时间步长的瞬态分析
 Variable Transient  用于可变时间步长的瞬态分析
-"""                                                
+""" 
+---------------------------------------------------------------------------------------------------------------------------------------
+#push-over
+						 
+loadconst -time 0.0; # sets loads constraint and resets time to be 0.0
+						 
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------                                                 
 zerolength(零长度单元)                                                
 #此命令用于构造zeroLength元素对象，该对象由同一位置的两个节点定义。节点由多个UniaxialMaterial对象连接，以表示元素的力 - 变形关系。
