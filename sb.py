@@ -252,9 +252,9 @@ load $nodeTag $Fx $Fy $Fz $Mx $My $Mz
 }
 均布荷载：
 pattern Plain 1 Linear {
-eleLoad -ele  1                       -type -beamUniform 0    -12173.5576171875 
-eleLoad -ele $eleTag1 <$eleTag2 ....> -type -beamUniform $Wy         $Wz           <$Wx>
-                                             均布线荷载
+eleLoad -ele  1                       -type -beamUniform          0                     -12173.5576171875 
+eleLoad -ele $eleTag1 <$eleTag2 ....> -type -beamUniform         $Wy                            $Wz                      <$Wx>
+                                          均布线荷载  截面局部坐标轴y方向的均布荷载  截面局部坐标轴方向的z方向的均布荷载 沿单元长度方向的均布荷载   
 #...
 }
 '''
