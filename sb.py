@@ -463,9 +463,12 @@ if { [file exists output] == 0 } {
 }						 
 &&(and) ||(or) !(not)  #逻辑运算符
 						 
-						 
-                 
-
+循环
+while循环 for循环 嵌套循环 
+#无限循环,如果条件永远为真，则循环变为无限循环，可通过将表达式保留为1进行无限循环，可通过ctrl+c键终止无限循环
+while {1} {
+	puts "this loop will run forever."  
+}
                                                 
                                                 
                                                 
