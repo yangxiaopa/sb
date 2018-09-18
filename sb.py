@@ -522,13 +522,59 @@ puts  $personA(Age)
 Dave
 14						 
                                                 
-                                                
-                                                
-                                                
-                                                
-                                                
-                                                
-                                                
+程序:提供特定可重用功能的一系列命令的代码块。
+proc procedureName {arguments} {
+	body
+}                                                                                 
+#For Example
+proc hello { } {
+	puts "hello world fuck you"
+}
+hello #调用程序  
+hello world fuck you #程序运行结果                                               
+#具有多个参数的程序
+proc add {a b} {
+   return [expr $a+$b]
+}
+puts [add 10 30]   
+40
+#具有可变参数的程序
+proc avg {numbers} {
+	set sum 0
+	foreach number $numbers {
+		set sum [expr $sum + $number]
+	}
+	set average [expr $sum/[llength $numbers]]
+	return $average
+}
+puts [avg {70 80 50 60}]
+puts [avg {70 80 50 }]
+65
+66   
+#具有默认参数的程序：默认参数用于提供默认值，如果没有提工值，则可以使用该值。
+proc add {a {b 100} } {
+   return [expr $a+$b]
+}
+puts [add 10 30]
+puts [add 10]
+40
+110   
+#递归程序   
+proc factorial {number} {
+	if {$number <=1} {
+		return 1
+	}
+	return [expr $number * [factorial [expr $number-1]]]
+}	
+puts [factorial 3]
+puts [factorial 5]  
+6   
+120   
+   
+   
+   
+   
+   
                                                 
 *************************************************************调用opensees的命令*****************************************************
 system （‘opensees co.tcl’） 或       ！OpenSees.exe co.tcl 
