@@ -570,8 +570,12 @@ puts [factorial 3]
 puts [factorial 5]  
 6   
 120   
-   
-   
+
+tcl文件 I/O
+set file [open   tmp.out    w]; #将文件tmp.out打开并写入
+          open filename   accessMode(r:读取文件，w:写入文件，a:以附加形式写入文件)
+close $file1
+close fileName   
    
    
    
