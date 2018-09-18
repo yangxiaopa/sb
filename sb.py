@@ -433,12 +433,47 @@ puts [format "%.2f" $b] #输出保留两位小数的形式。
 $ :为变量置换符号。
 expr : 进行数学运算都要使用expr命令执行。
 puts [format "%.2f" $sqt]：为输出的简洁性，将结果保留2位小数。                  
-
+%s(字符串表示）%d(整数表示) %f(浮点表示) %e(具有尾数指定形式的浮点表示) %x(六进制十进制表示) 
+						 
 字符串表示
 set myVariable "hello world"
 puts $myVariable；						 
 set myVariable {hello world}
 puts $myVariable；#当我们要表示多个字符串时，可使用双引号或大括号，与其他语言不同，在tcl中当单个单词不需要双引号。
+						 
+set s1 "hello world"
+puts "length of string s1 is [string length $s1]";
+
+set s1 {orange blue red green}
+puts [llength $var]
+
+set s1 {orange blue red green}
+puts [lindex $var 1];#列表索引
+blue
+   
+set var {orange blue red green}
+set var [linsert  $var 3 black white]; #在索引处插入项
+puts $var   
+orange blue red black white green
+   
+set var {orange blue red green}
+set var [lreplace $var 2 3 black white]；#替换索引项目
+puts $var   
+orange blue black white
+   
+set var {orange blue red green}
+lset var 0 black；#设置项目索引 
+puts $var   
+black blue red green
+   
+set var {orange blue red green}
+set var [lsort $var]；#排序列表
+puts $var
+blue green orange red   
+   
+set s1 "hello"
+append s1 "world";#追加命令
+puts "$s1"
 						 
 列表
 set myVariable {red green blue}
@@ -470,7 +505,22 @@ while {1} {
 	puts "this loop will run forever."  
 }
                                                 
-                                                
+数组迭代
+set languages(0) Tcl
+set languages(1) "C Language"
+for { set index 0 }  { $index < [array size languages] }  { incr index } {
+   puts "languages($index) : $languages($index)"
+}
+languages(0) : Tcl
+languages(1) : C Language
+						 
+关联数组
+set personA(Name) "Dave"
+set personA(Age) 14
+puts  $personA(Name)
+puts  $personA(Age)
+Dave
+14						 
                                                 
                                                 
                                                 
@@ -528,7 +578,8 @@ set AccelSeries "Series -dt $dt -filePath $iGMfile -factor $GMfatt";
 pattern UniformExcitation $IDloadTag $GMdirection -accel $AccelSeries; 
 }    多维地震波的输入标准格式                                                
 ----------------------------------------------------------------------------------------------------------------------------------------                                                
-                                                
+数组迭代
+						 
                                                 
                                                 
                                                 
