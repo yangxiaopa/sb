@@ -588,17 +588,47 @@ set file_data [read $fp]
 puts $file_data
 close $fp 
    
-逐行读取直至文件末尾
-set fp [open "input.txt" w+]
-puts $fp "test
-test"
-close $fp
-set fp [open "input.txt" r]
+逐行读取直至文件末尾，
+set fp [open "co.tcl" r]
 
 while { [gets $fp data] >= 0 } {
    puts $data
 }
-close $fp
+close $fp； #读取co.tcl文件并打印在屏幕上
+
+tcl内置函数
+namespace import ::tcl::mathfunc::*   #调用包
+puts [tan 10]
+puts [pow 10 2]
+0.6483608274590866
+100.0   
+abs ceil 等等
+   
+时钟
+#get seconds
+set currentTime [clock seconds]
+puts $currentTime
+#get format 
+puts "The time is: [clock format $currentTime -format %H:%M:%S]"； #将秒转换为小时分钟秒
+puts "The date is: [clock format $currentTime -format %D]"；#%D数字日期，mm/dd/yy 月日年
+   
+tcl正则表达式
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
 
                                                 
 *************************************************************调用opensees的命令*****************************************************
