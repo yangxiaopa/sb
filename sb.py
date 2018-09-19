@@ -572,13 +572,34 @@ puts [factorial 5]
 120   
 
 tcl文件 I/O
-set file [open   tmp.out    w]; #将文件tmp.out打开并写入
-          open filename   accessMode(r:读取文件，w:写入文件，a:以附加形式写入文件)
-close $file1
-close fileName   
+set file [open   tmp.out    w+]; #将文件tmp.out打开阅读并写入
+          open filename   accessMode(r:读取文件，r+:打开文件进行阅读和写入w:写入文件，w+：打开文件进行阅读和写入a:以附加形式写入文件，原内容保留)
+puts $file "hello world fucking you"；#写入文件
    
+close $file
+close fileName #关闭文件  
+
+读文件
+set fp [open "input.txt" w+]
+puts $fp "test"
+close $fp
+set fp [open "input.txt" r]
+set file_data [read $fp]
+puts $file_data
+close $fp 
    
-   
+逐行读取直至文件末尾
+set fp [open "input.txt" w+]
+puts $fp "test
+test"
+close $fp
+set fp [open "input.txt" r]
+
+while { [gets $fp data] >= 0 } {
+   puts $data
+}
+close $fp
+
                                                 
 *************************************************************调用opensees的命令*****************************************************
 system （‘opensees co.tcl’） 或       ！OpenSees.exe co.tcl 
