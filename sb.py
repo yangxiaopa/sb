@@ -390,7 +390,7 @@ puts $Periods " $lambda"； #记录特征值数据至文本中
 close $Periods；#记录完成，关闭文本文件                                                
 -----------------------------------------------------------------------------------------------------------------------------------------------
 opensees里结构采用的是瑞利阻尼：
-'''						 
+'''<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<						 
 set xDamp 0.05;  #设置阻尼比为0.05
 set nEigenI 1;  #主振型1为第一振型
 set nEigenJ 2;  #主振型2为第二振型
@@ -402,7 +402,7 @@ set omegaJ [expr pow($lambdaJ,0.5)]; #从特征值求解圆频率w2
 set alphaM [expr $xDamp*(2*$omegaI*$omegaJ)/($omegaI+$omegaJ)]; #质量比例系数 
 set betaKcurr [expr 2.*$xDamp/($omegaI+$omegaJ)];   #刚度比例系数
 rayleigh $alphaM $betaKcurr 0 0      #定义瑞利阻尼，只需填写α和β，其他为0						 
-'''                                             
+'''>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>                                             
 lindex命令返回list列表中的第index元素，替代时元素从0开始（也就是说索引就是第一个元素）
 pow(x , y)函数为幂运算，求解x的y幂次方						 
 克拉夫《结构动力学》12-5 比例粘滞阻尼矩阵的建立：
@@ -586,8 +586,9 @@ close $fp
 set fp [open "input.txt" r]
 set file_data [read $fp]
 puts $file_data
-close $fp 
+close $fp
    
+'''   
 逐行读取直至文件末尾，
 set fp [open "co.tcl" r]
 
@@ -595,7 +596,8 @@ while { [gets $fp data] >= 0 } {
    puts $data
 }
 close $fp； #读取co.tcl文件并打印在屏幕上
-
+'''
+   
 tcl内置函数
 namespace import ::tcl::mathfunc::*   #调用包
 puts [tan 10]
@@ -612,8 +614,8 @@ puts $currentTime
 puts "The time is: [clock format $currentTime -format %H:%M:%S]"； #将秒转换为小时分钟秒
 puts "The date is: [clock format $currentTime -format %D]"；#%D数字日期，mm/dd/yy 月日年
    
-tcl正则表达式
-   
+字符串函数
+append:将值追加到字符串尾 format：字符串格式化 scan：字符串分解 string option：字符串操作与命令集   
    
    
    
