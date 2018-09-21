@@ -385,11 +385,11 @@ zerolength(零长度单元)
 set numModes 12
 set lambda [eigen  $numModes]  # eigen命令用于求解特征值 12为特征值的数量
 set period "Periods.txt"； #保存计算特征值
-set Periods [open $period "w"]；#打开文本文件进行记录
+set Periods [open $period "w"]；#创建periods。txt文件并打开文本文件进行记录
 puts $Periods " $lambda"； #记录特征值数据至文本中
 close $Periods；#记录完成，关闭文本文件                                                
 -----------------------------------------------------------------------------------------------------------------------------------------------
-opensees里结构采用的是瑞利阻尼：
+opensees里结构采用的是瑞利阻尼：定义阻尼比0.05，计算前两阶频率，定义一个periods.txt文本 打开，将计算频率写入，关闭文件，让后计算瑞利阻尼。
 '''<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<						 
 set xDamp 0.05;  #设置阻尼比为0.05
 set nEigenI 1;  #主振型1为第一振型
