@@ -139,7 +139,9 @@ proc avg {numbers} {
 puts [avg {70 80 50 60}]
 puts [avg {70 80 50 }]
 65
-66   
+66 
+
+
 #具有默认参数的程序：默认参数用于提供默认值，如果没有提工值，则可以使用该值。
 proc add {a {b 100} } {
    return [expr $a+$b]
