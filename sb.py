@@ -410,7 +410,39 @@ pow(x , y)函数为幂运算，求解x的y幂次方
 	将上述比例阻尼矩阵用于工程实践时，建议ω1取多自由度体系的基频，而ω2则在对动力反应有显著贡献的高阶振型中选取。这样
 	可保证对于这两个振型可以得到所需要的阻尼比（ξ1=ξn=ξ），在这两个指定频率之间所对应的振型将具有较低的阻尼比，而频率
 	大于ω2的所有振型的阻尼比将大于ξn，并随频率的增加单调增加，最终结构为具有很高频率的振型反应因其高阻尼比而被有效消除。
-                                                
+						 
+						 
+ #求解前六阶周期（野蛮版本）
+set nEigen1 1;  #主振型1为第一振型
+set nEigen2 2;  #主振型2为第二振型
+set nEigen3 3;  #主振型3为第一振型
+set nEigen4 4;  #主振型4为第二振型
+set nEigen5 5;  #主振型5为第一振型
+set nEigen6 6;  #主振型6为第二振型
+set lambdaNn [eigen [expr $nEigen6]]; #求解六阶振型的特征值
+set lambda1 [lindex $lambdaNn [expr $nEigen1-1]]; #提取第一阶特征值
+set lambda2 [lindex $lambdaNn [expr $nEigen2-1]]; #提取第二阶特征值
+set lambda3 [lindex $lambdaNn [expr $nEigen3-1]]; #提取第三阶特征值
+set lambda4 [lindex $lambdaNn [expr $nEigen4-1]]; #提取第四阶特征值
+set lambda5 [lindex $lambdaNn [expr $nEigen5-1]]; #提取第五阶特征值
+set lambda6 [lindex $lambdaNn [expr $nEigen6-1]]; #提取第六阶特征值
+set omega1 [expr pow($lambda1,0.5)]; #从特征值求解圆频率w1
+set omega2 [expr pow($lambda2,0.5)]; #从特征值求解圆频率w2
+set omega3 [expr pow($lambda3,0.5)]; #从特征值求解圆频率w3
+set omega4 [expr pow($lambda4,0.5)]; #从特征值求解圆频率w4
+set omega5 [expr pow($lambda5,0.5)]; #从特征值求解圆频率w5
+set omega6 [expr pow($lambda6,0.5)]; #从特征值求解圆频率w6
+set PI 	[expr 2*asin(1.0)];		# define constant
+set Tperiod1 [expr 2*$PI/$omega1];	   	# period
+set Tperiod2 [expr 2*$PI/$omega2];
+set Tperiod3 [expr 2*$PI/$omega3];
+set Tperiod4 [expr 2*$PI/$omega4];
+set Tperiod5 [expr 2*$PI/$omega5];
+set Tperiod6 [expr 2*$PI/$omega6];
+set period "periods.txt"
+set TperiodL [open $period "w"]
+puts $TperiodL "$Tperiod1 $Tperiod2 $Tperiod3 $Tperiod4 $Tperiod5 $Tperiod6"
+close $TperiodL;                                               
 *************************************************************调用opensees的命令*****************************************************
 system （‘opensees co.tcl’） 或       ！OpenSees.exe co.tcl 
 -----------------------------------------------------------------------------------------------------------------------------------                                                
