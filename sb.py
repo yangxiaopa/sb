@@ -410,9 +410,16 @@ pow(x , y)函数为幂运算，求解x的y幂次方
 	将上述比例阻尼矩阵用于工程实践时，建议ω1取多自由度体系的基频，而ω2则在对动力反应有显著贡献的高阶振型中选取。这样
 	可保证对于这两个振型可以得到所需要的阻尼比（ξ1=ξn=ξ），在这两个指定频率之间所对应的振型将具有较低的阻尼比，而频率
 	大于ω2的所有振型的阻尼比将大于ξn，并随频率的增加单调增加，最终结构为具有很高频率的振型反应因其高阻尼比而被有效消除。
-						 
-						 
- #求解前六阶周期（野蛮版本）
+	set xDamp 0.05;
+set nEigenI 3;		# mode 3
+set nEigenJ 9;		# mode 9
+set lambdaN [eigen [expr $nEigenJ]];
+#set lambdaN [eigen ProfileSPD $nEigenJ];
+set frequence "frequences.txt"  
+set frequences [open $frequence "w"]
+puts $frequences "$lambdaN"
+close $frequences;
+#求解前六阶周期
 set nEigen1 1;  #主振型1为第一振型
 set nEigen2 2;  #主振型2为第二振型
 set nEigen3 3;  #主振型3为第一振型
@@ -439,10 +446,20 @@ set Tperiod3 [expr 2*$PI/$omega3];
 set Tperiod4 [expr 2*$PI/$omega4];
 set Tperiod5 [expr 2*$PI/$omega5];
 set Tperiod6 [expr 2*$PI/$omega6];
-set period "periods.txt"
-set TperiodL [open $period "w"]
+set tcl_precision 4;    #用tcl的特殊变量来更改精度
+set TperiodL [open "periods.txt" w]
 puts $TperiodL "$Tperiod1 $Tperiod2 $Tperiod3 $Tperiod4 $Tperiod5 $Tperiod6"
-close $TperiodL;                                               
+close $TperiodL;
+record
+set lambdaI [lindex $lambdaN [expr $nEigenI-1]];
+set lambdaJ [lindex $lambdaN [expr $nEigenJ-1]];
+set omegaI [expr pow($lambdaI,0.5)]; 
+set omegaJ [expr pow($lambdaJ,0.5)];
+set alphaM [expr $xDamp*(2*$omegaI*$omegaJ)/($omegaI+$omegaJ)]; 
+set betaKcurr [expr 2.*$xDamp/($omegaI+$omegaJ)];   
+rayleigh $alphaM $betaKcurr 0 0 					 
+						 
+             
 *************************************************************调用opensees的命令*****************************************************
 system （‘opensees co.tcl’） 或       ！OpenSees.exe co.tcl 
 -----------------------------------------------------------------------------------------------------------------------------------                                                
