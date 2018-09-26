@@ -74,7 +74,7 @@ green
 						 
 更改精度
 set variableA "10"
-set tcl_precision 5；#使用tcl_precision特殊变量来更改精度。
+set tcl_precision 5；#使用tcl_precision特殊变量来更改精度！！！！！！！！！！！！！！！！！。
 set result [expr $variableA / 9.0];
 puts $result 						 
 1.1111						 
