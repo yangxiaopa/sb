@@ -239,7 +239,7 @@ pattern 定义荷载工况对象，每个pattern 是一个与timeseries相关联
 pattern UniformExcitation $ patternTag $ dir -accel $ tsTag 
 pattern Plain             $ patternTag              $ tsTag
                         加载模式的标签       加载模式中使用时间序列的标签
-'''		  
+		  
 timeSeries Linear 1 ;# 建立一个线性的时间序列
 pattern Plain 1 1 { ;# 建立一个荷载工况
 	load 1 5.0e3  ;# 给节点1加一个5kN的力
@@ -257,13 +257,31 @@ eleLoad -ele $eleTag1 <$eleTag2 ....> -type -beamUniform         $Wy            
                                           均布线荷载  截面局部坐标轴y方向的均布荷载  截面局部坐标轴方向的z方向的均布荷载 沿单元长度方向的均布荷载   
 #...
 }
-'''
-timeSeries Path 1 -dt 0.01 -filePath accel.txt ;# 创建地震加速度时间序列
-pattern UniformExcitation 1        1        -accel 1 -fact 9800 ;# 创建地震工况
-                        工况编号  时程编号
+
+# Define Loads
+set WzFloor [expr ($DL+$LL)*($L/2.0)*$g] ;
+
+pattern Plain 1 Linear { ;
+eleLoad -ele 102 104 202 204 -type -beamUniform 0.0 -$WzFloor 
+} ;
+
+timeSeries Path 1 -dt 0.01 -filePath accel.txt -fact 9800 ;# 创建地震加速度时间序列
+pattern UniformExcitation 1        1        -accel 1  ;# 创建地震工况
+                        工况编号  全局方向        时程编号
 
 timeSeries Linear $ tag   ***** 
-timeSeries Path $ tag -dt $ dt -filePath $ filePath <-factor $ cFactor> <-useLast> <-prependZero> <-startTime $ tStart>                   
+timeSeries Path $ tag -dt $ dt -filePath $ filePath <-factor $ cFactor> <-useLast> <-prependZero> <-startTime $ tStart>  
+
+# Define Acceleration
+set dtIn 0.02;
+set accelSeries "Series -dt $dtIn -filePath accel.txt -factor $g ";
+
+#                         Tag  DOF          Accel
+pattern UniformExcitation  2    1 -accel $accelSeries ;	
+		  
+		  
+		  
+		  
 -----------------------------------------------------------------------------------------------------------------------------------------------
 recorder Node    -file dispx.txt   -time   -nodeRange  1 23945  -dof 1 disp
 recorder Node    -file dispy.txt   -time   -nodeRange  1 23945  -dof 2 disp
@@ -311,7 +329,8 @@ system Umfpack  用于构造使用Umfpack求解器的稀疏方程组
 system 命令用于构造linearSOE和linearSOLVER对象来存储和求解分析中的方程组                                               
 --------------------------------------------------------------------------------------------------------------------------------------                                                
 test NormDispIncr 1.0e-4 2000 2;  
-                                                
+#   test NormDispIncr 1.0e-4 2000 2;#采用位移收敛准则，用于检查收敛的容差标准，返回失败条件之前要检查的最大迭代次数，在成功测试结束时打印关于规范和迭代次数的信息
+#   test Energyincr 1.0e-4 200; #采用能量准则的收敛准则，容差1.0e-4最大迭代步200                                                  
 test Energyincr 1.0e-4 200; #采用能量准则的收敛准则，容差1.0e-4最大迭代步200                                                 
 test命令用于构件convergencetest对象，某些solutionAlgorithm对象需要一个convergencetest对象来确定迭代步骤结束时是否实现了收敛。
 """                                                
@@ -363,7 +382,8 @@ integrator Newmark 0.5 0.25
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------                                                
 analysis Static；#静力分析
 analyze 5；#增量荷载的上限（5步）                                                
-analysis用于构造analysis对象，该分析对象由分析人员之前创建的组建对象构建的，所有当前可用的分析对象都"采用增量式"解决方案                                                
+analysis用于构造analysis对象，该分析对象由分析人员之前创建的组建对象构建的，所有当前可用的分析对象都"采用增量式"解决方案
+analyze 2000 0.02； ＃以0.02为增量执行2000个瞬时时间步
 """                                                
 static  用于静态分析
 Transient  用于恒定时间步长的瞬态分析
@@ -457,7 +477,10 @@ set omegaI [expr pow($lambdaI,0.5)];
 set omegaJ [expr pow($lambdaJ,0.5)];
 set alphaM [expr $xDamp*(2*$omegaI*$omegaJ)/($omegaI+$omegaJ)]; 
 set betaKcurr [expr 2.*$xDamp/($omegaI+$omegaJ)];   
-rayleigh $alphaM $betaKcurr 0 0 					 
+rayleigh $alphaM $betaKcurr 0 0 
+-----------------------------------------------------------------------------------------------------------------						 
+loadConst -time 0.0; #设置加载常量并将时间重置为0.0 （在进行动态分析之前，在重力载荷下分析结构。使用负载控制的静态分析以10个步骤施加重力载荷。
+#为了使重力载荷保留在结构上以进行所有后续分析，在重力分析完成后使用loadConst命令。此命令还用于将时间重置为零，以便动态分析从零时开始。）
 						 
              
 *************************************************************调用opensees的命令*****************************************************
@@ -468,7 +491,7 @@ set testType NormDispIncr
 set testTol 1.0e-4
 set testIter 25
 test $testType $testTol $testIter   
-#   test NormDispIncr 1.0e-4 2000 2;
+#   test NormDispIncr 1.0e-4 2000 2;#采用位移收敛准则，用于检查收敛的容差标准，返回失败条件之前要检查的最大迭代次数，在成功测试结束时打印关于规范和迭代次数的信息
 #   test Energyincr 1.0e-4 200; #采用能量准则的收敛准则，容差1.0e-4最大迭代步200                                                
 ------------------------------------------------------------------------------------------------------------------------------------                                                
 # set the algorithm parameters
