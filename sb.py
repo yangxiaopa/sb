@@ -93,7 +93,7 @@ else:
       但局部2轴的方向没有指定，在对twonodelink单元赋方向时，如果坐标数小于3，应对不存在的坐标值赋0.'''
 
 '''5.twonodelink的自由度耦合，如果不希望发生自由度耦合，应定义多个在1方向上的twonodelink单元，而不是使用一个单元的多个方向，可参考例题。 '''
-
+http://www.hanlindong.com/2017/opensees-5questions-1/
 '''6.record输出，周期与振型，结构的位移和速度通常是相对于地面的相对位移和相对速度，而要与牛顿第二定律建立联系需关心结构的加数度为绝对加数度。
 recorder Node -file node.txt -node 1 -dof 1 accel输出的为相对加数度，recorder Node -file node.txt -timeSeries 1 -node 1 -dof 1 accel输出为绝对加数度'''
 
