@@ -9,8 +9,25 @@ set bar
 set foo 0; #******
 
 tcl反斜线序列：\n 换行符 \b 删除 \f 换页符 \r 回车 \t 制表符 \v 垂直制表符 
-双引号引用：双引号可取消其中单词和命令分隔符的特殊解释						 
-						 
+双引号引用：双引号可取消其中单词和命令分隔符的特殊解释，大括号取消其中所有特殊字符的特殊解释						 
+若想在由双引号括起来的单词中包含双引号字符，则应该使用反斜线替换：set msg "could not open file \"name.out\""   could not open file "name.out"
+大括号引用：取消其中所有特殊字符的特殊意义，所有字符都将被原封不动地识别为这个单词的值
+
+ file delete {*}[glob *.txt]；#删除文件夹下面以.txt为后缀的文件
+ file mkdir output; #创建output为名称的文件夹
+
+ proc countdown {x} {
+                puts "running countdown"
+                if 1 {
+                   while {$x > 0} {
+                         puts "x = $x"
+                        incr x -1
+                   }
+                }
+}
+countdown 3
+#尽量避免在注释中出现大括号，如确实需要在注释中使用大括号，确保他们是配对的。对于每一个左大括号，都保证有一个正确配对的右大括号。
+
 set命令为变量赋值 #  set xdamp 0.05                                                
 命令替换 如   # set lambdaN [eigen [expr $nEigen]]；命令替换通过方括号表示，会调用括号中的命令。                                               
 数学表达式   # set pi [expr 2*asin(1.0)]
