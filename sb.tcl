@@ -1,16 +1,18 @@
 tcl script language
 tcl面向过程的语言，先被读取后被执行
 *******************************************  TCL脚本语言的语法    ************************************************************ 
-N-M-C-KG
+N-M-C-KG为一套单位
 tcl基于字符串的命令语言，由 新行 或 分号 ；分隔的命令组成
 set foo 0
 set bar 
 注释
 set foo 0; #******
-						 
+
+tcl反斜线序列：\n 换行符 \b 删除 \f 换页符 \r 回车 \t 制表符 \v 垂直制表符 
+双引号引用：双引号可取消其中单词和命令分隔符的特殊解释						 
 						 
 set命令为变量赋值 #  set xdamp 0.05                                                
-命令替换 如   # set lambdaN [eigen [expr $nEigen]]                                                
+命令替换 如   # set lambdaN [eigen [expr $nEigen]]；命令替换通过方括号表示，会调用括号中的命令。                                               
 数学表达式   # set pi [expr 2*asin(1.0)]
                   
 tcl允许打开文件以读入和写出
@@ -162,7 +164,19 @@ proc factorial {number} {
 puts [factorial 3]
 puts [factorial 5]  
 6   
-120   
+120 
+或者
+proc factorial {val} {
+	set result 1
+	while {$val>0} {
+		set result [expr $result*$val]
+		incr val -1
+	}
+	return $result
+}
+factorial 3
+6
+{}大括号，当过程块作为一个参数传递给proc时，不希望发生变量替换和命令替换，我们希望替换在过程块作为tcl脚本处理时发生。大括号保证替换只在过程块内部发生
 
 tcl文件 I/O
 set file [open   tmp.out    w+]; #将文件tmp.out打开阅读并写入
