@@ -101,7 +101,7 @@ puts $result
 1.1111						 
 						 
 运算符
-+ - * / %(取余数)；#算术运算符
++ - * / %(取余数) **；#算术运算符
 ==（检查两个操作数的值是否相等）  ！=（检查两个操作数的值是否不等） >      <     >=        <=     #关系运算符						 
 if { [file exists output] == 0 } {
 	  file mkdir output;
@@ -244,5 +244,22 @@ puts "The time is: [clock format $currentTime -format %H:%M:%S]"； #将秒转�
 puts "The date is: [clock format $currentTime -format %D]"；#%D数字日期，mm/dd/yy 月日年
    
 字符串函数
-append:将值追加到字符串尾 format：字符串格式化 scan：字符串分解 string option：字符串操作与命令集   
-   
+append:将值追加到字符串尾 format：字符串格式化 scan：字符串分解 string option：字符串操作与命令集
+
+数组
+set aa(1) 2; #aa为数组名 括号中1为元素名
+要在元素中使用空格，可使用反斜线替换的空格符，或者将整个变量都用双引号括起来。如，set "capital(south dakota)" pierre.另一种在元素名称上使用替换：
+set state "new mexico"
+set capital($state) "santa fe"
+
+ince命令
+set x 43; incr x 12 
+
+append命令   
+set msg "calculate now\n"
+foreach i {1 2 3 4 5} {
+	append msg "$i square is [expr $i*$i]\n"
+}
+set msg
+
+
