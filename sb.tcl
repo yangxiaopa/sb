@@ -107,7 +107,9 @@ if { [file exists output] == 0 } {
 	  file mkdir output;
 }						 
 &&(and) ||(or) !(not)  #逻辑运算符
-						 
+tcl数学函数：abs(x) acos(x) asin(x) atan(x) bool(x) ceil(x) double(x) exp(x) floor(x) hypot(x,y) int(x)
+            log(x) log10(x) max(arg,...) min(arg,...) pow(x,y) rand() round(x) sqrt(x) 
+
 循环
 while循环 for循环 嵌套循环 
 #无限循环,如果条件永远为真，则循环变为无限循环，可通过将表达式保留为1进行无限循环，可通过ctrl+c键终止无限循环
@@ -261,5 +263,67 @@ foreach i {1 2 3 4 5} {
 	append msg "$i square is [expr $i*$i]\n"
 }
 set msg
+
+expr命令
+expr {2*sin($x)}; #将表达式用大括号括起来，效率更高更可避免代码中安全漏洞
+
+列表操作
+if {“los angeles" in $cities} {
+		...
+}
+
+字符串操作
+取得字符 string index 
+string index "sample  string" 3;#索引序号从0开始,若索引参数中含有空白符索引地方超过字符串，string index会返回空字符串
+string index "sample  string" end;
+
+取得字符 string range 
+string range "sample  string" 3 end;#返回第一个索引指向的位置到第二个索引之间的所有字符。
+
+转换为大写字母 string toupper 
+string toupper "watch out!"
+WATCH OUT!
+
+
+转换为小写字母 string tolower
+string tolower "WATCH!"
+watch!
+
+裁剪字符串 string trim /  string trimleft / string trimright 
+string trim aaxxxbab abc; #指定裁剪的字符串与指定裁剪方式，string trim命令把开头和结尾出现的裁剪字符都删去，返回删除后的字符串
+
+字符串重复指定 string repeat 
+string repeat "*" 20;
+string repeat "a b c d\n" 5;
+a b c d
+a b c d
+a b c d
+a b c d
+a b c d
+
+简单搜索
+string first th "There is the tub where I bathed today"；#在第二个字符串中搜索与第一个字符串相同的子字符串，如果找不到返回-1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
