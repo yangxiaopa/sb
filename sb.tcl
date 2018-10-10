@@ -301,8 +301,24 @@ a b c d
 a b c d
 a b c d
 
-简单搜索
+简单搜索 string first / string last 
 string first th "There is the tub where I bathed today"；#在第二个字符串中搜索与第一个字符串相同的子字符串，如果找不到返回-1
+
+字符串比较 string compare （区分大小写）
+string compare michigan michigan; #读入两个字符串操作，并进行比较，如果字符串相同返回0 如果第一个字符串在字典中先于第二个字符串
+   			           返回-1，如果第一个字符串在字典中后于第二个字符串返回1
+				   
+
+字符串比较 string equal  （区分大小写,除非指定-nocase）string equal -nocase dog Dog
+string equal cat cat ; #对两个字符串进行简单的字符串比较，严格相同返回1，否者返回0
+string equal -length 4 catalyst cataract; #只对前length个字符进行比较。
+
+字符串置换
+string replace "san diego, califoria" 4 8 "francisco"; #参数字符串，删除字符开头与结尾的索引 置换用字符串
+
+format创建字符串
+format "the square root of 10 is %.3f" [expr sqrt(10)]；#
+
 
 
 
