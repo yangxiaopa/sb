@@ -317,8 +317,23 @@ string equal -length 4 catalyst cataract; #只对前length个字符进行比较�
 string replace "san diego, califoria" 4 8 "francisco"; #参数字符串，删除字符开头与结尾的索引 置换用字符串
 
 format创建字符串
-format "the square root of 10 is %.3f" [expr sqrt(10)]；#
+format "the square root of 10 is %.3f" [expr sqrt(10)]；
 
+列表
+lindex {john anne mary jim} 1; 
+llength {a b c d}; 
+ concat {a b c} {d e} f {g h i}; #将参数列表中的所有元素串接为一个大的列表
+ a b c d e f g h i
+ concat {a b c} {d e} {f {g h i}}；
+ a b c d e f {g h i}
+ 
+ set x {a b c};
+ set y {d e};
+ set z [concat $x $y];
+ 
+lrepeat 3 a;命令重复元素
+a a a
+lrange $x 1 3;#返回列表$x中范围索引1到3的参数
 
 
 
