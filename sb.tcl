@@ -334,12 +334,63 @@ llength {a b c d};
 lrepeat 3 a;命令重复元素
 a a a
 lrange $x 1 3;#返回列表$x中范围索引1到3的参数
+linsert $ 2 x y z;#把一个或多个元素插入列表，形成新的列表
+lreplace $x 3 5; #删除列表中对应索引的元素，如果了replace指定更多的参数，参数会被插入被删除元素的位子
+set person [lreplace $person 1 1 [list $q]]；
+lset person 1 32;#修改已经存在的列表
+lappend x $a $b $c;#可改写为 set x [concat $x [list $a $b $c]];
+lassign {a b c} x y z;
+puts "$x $y $z"
+set x {john anne mary jim};
 
+lsearch $x jim;
 
+lsearch -all $x *y;
+2
+lsearch -all -inline  $x *m; #inline选项指定返回元素，而非元素的索引
+jim
 
+lsort 按字典顺序排序
+lsort {john fuck honda jackba option guangu look uo sick}
+fuck guangu honda jackba john look option sick uo
+-decreasing 将“最大”元素放在最前面； -integer 和 -real 将列表元素视为整数或实数，按照值大小排序； -dictionary指定不区分大小写的排序，元素中
+-unique 原列表重复出现的元素只会出现一次                                                                  嵌入的数字作为非负整数处理
+lsort -integer -index 1 {{first 24} {second 18} {third 30 }}
+{second 18} {first 24} {third 30 }
 
+字符串和列表间的转化 split 与join 
+split命令将字符串分成几个部分，然后对各个部分独立进行处理
+split {a b c} {};
+a { } b { } c
+join命令是split命令逆操作，把列表元素串接为一个字符串，元素间用指定分隔符隔开
+set x {24 112 4}
+expr [join $x +]
 
+字典
+dict get命令
+set prefers {
+                joe     {the easy life}
+                jeremy  {fast cars}
+                {uncle sam}     {motherhood and apple pie}
+}
+dict get $prefers joe;
+the easy life
 
+创建和更新字典
+检测字典：子命令size exists keys for 
+dict size {firstname anne surname huan title miss}
+3
+dict size {}
+0
+
+dict size {a alpha b bravo c charlie d delta e epsilon}
+5
+
+set fuck {a alpha b bravo c charlie d delta e epsilon}
+dict exists $fuck a
+1
+dict exists $fuck f
+0
 
 
 
