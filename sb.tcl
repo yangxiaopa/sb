@@ -391,6 +391,57 @@ dict exists $fuck a
 1
 dict exists $fuck f
 0
+dict keys $fuck; #获得字典中所有关键字的列表
+a b c d e
+dict values $fuck； #获取字典中关联值的列表
+alpha bravo charlie delta epsilon
+
+dict for 命令获取一对变量的列表作为一个参数（关键字与关联值），遍历字典的关键字与关联值
+dict for {key value} $fuck {
+                puts [format "%s: %s" $key $value]
+}
+a: alpha
+b: bravo
+c: charlie
+d: delta
+e: epsilon
+
+dict append fuck a beta；
+a alphabeta b bravo c charlie d delta e epsilon
+
+统计一段字中各单词出现的次数
+proc computehistogram {text} {
+                set frequencies { }
+                foreach word [split $text] {
+                        #ignore empty words caused by double spaces
+                        if { $word eq " " } continue
+                        dict incr frequencies [string tolower $word]
+                }
+                return $frequencies
+}
+computehistogram "this day is a hanppy happy day"
+this 1 day 2 is 1 a 1 hanppy 1 happy 1
+
+在两个关键字之间交换关联值
+set fuck {a alpha b bravo c charlie d delta e epsilon}
+dict update fuck a s1 b s2 {
+                lassign [list $s1 $s2] s2 s1
+}
+
+8.流程控制： if while for foreach switch eval
+break:终止最内层的循环命令
+continue：终止最内层循环的当前迭代步，进行该命令的下一个迭代步
+eval 用空格分隔符把所有arg串接起来
+
+
+
+
+
+
+
+
+
+
 
 
 
