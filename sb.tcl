@@ -335,6 +335,10 @@ lrepeat 3 a;命令重复元素
 a a a
 lrange $x 1 3;#返回列表$x中范围索引1到3的参数
 linsert $ 2 x y z;#把一个或多个元素插入列表，形成新的列表
+set x {a b {c d} e};
+linsert $x 2 x y z;
+a b x y z {c d} e
+如果索引值为零，那么新元素就插入到列表的开头，如果是1，新元素就插入到原列表第一个元素之后。
 lreplace $x 3 5; #删除列表中对应索引的元素，如果了replace指定更多的参数，参数会被插入被删除元素的位子
 set person [lreplace $person 1 1 [list $q]]；
 lset person 1 32;#修改已经存在的列表
@@ -433,6 +437,40 @@ break:终止最内层的循环命令
 continue：终止最内层循环的当前迭代步，进行该命令的下一个迭代步
 eval 用空格分隔符把所有arg串接起来
 
+if命令
+if {$x < 0 } { 
+	...
+} elseif { $x == 0 } {
+	...
+} elseif { $x == 1 } {
+	...
+} else {
+	...
+}
+
+switch命令
+switch $x { 
+	a {incr t1}
+	b {incr t2}
+	c {incr t3}
+}
+如果x的值为a 将其加t1; 如果x为b 将其加t2;如果x为c 将其加t3
+
+循环命令 while for foreach 
+把列表从变量a中复制到变量b中，并在复制时倒转列表中的元素顺序
+set b { }
+set i [expr {[llength $a] - 1}]
+while {$i >= 0} {
+	lappend b {lindex $a $i}
+	incr i -1
+}
+或
+set b { }
+foreach {set i [expr {[llength $a] -1}]} {$i >=0} {incr i -1} {
+	lappend b [lindex $a $i]
+}
+
+foreach
 
 
 
