@@ -470,17 +470,68 @@ foreach {set i [expr {[llength $a] -1}]} {$i >=0} {incr i -1} {
 	lappend b [lindex $a $i]
 }
 
-foreach
+foreach要获取三个参数，变量名 列表 构成循环体的tcl脚本，每次执行循环脚本块前，foreach将变量设为列表的下一个元素
 
+循环控制 break 与 continue 
+break命令让引起最内层循环的命令立即终止循环
+continue命令只终止最内层循环的当前迭代步
 
+从文件运行：source
+source co.tcl;#运行co.tcl文件内容，可以用绝对路径指定文件，或与当前运行的脚本工作目录相对的路径指定文件。允许在文件内的脚本中使用return命令终止过程
+             使用source将一个大的脚本分解为小的模块，由一个主脚本用source调用其他的脚本模块，可以通过把过程定义放到一个文件中，把可重用的过程建成库
+	     然后可以从多个应用程序中用source调用。
+	    
 
+9.0 过程proc :一个tcl过程就是用tcl脚本定义的一个命令。
+proc name arglist body 
 
+proc plus {a b} {
+	expr {$a+$b}
+}
+plus 3 4;
+7
 
+return命令：让最内层的过程立即返回，return参数就是该过程的后返回值，一个过程在执行完全部脚本前就提前返回。
+ proc fac {x} {
+                if {$x <=1} {
+                        return 1
+                }
+                return [expr {$x * [fac [expr {$x -1}]]}]
+}
+fac 4
+24
 
+局部与全局变量：传给过程的参数就是局部变量，过程可以使用global命令引用全局变量如：global x y 
+set a 1;
+set b 2;
+ proc printvars { } {
+                global a b
+                puts "a is $a, b is $b"
+} 
+printvars;
+a is 1, b is 2
 
+参数变量的数目与默认设置：
+proc inc {value {increment 1}} {
+	expr $value+$increment
+}
+incr 42 3
+45
+incr 42
+43
 
+参数列表中最后一个元素的特殊名称为args,那么调用过程中可以给出可变数量个参数。
+proc sum {args} {
+	set total 0
+	foreach val $args {
+		set total [expr {$total + $val}]
+	}
+	return $total
+}
+sum 1 2 3 4
+10
 
-
+传引用调用upvar
 
 
 
