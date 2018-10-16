@@ -564,11 +564,17 @@ if { [file exists output1]==0} {
       file mkdir output1 ;
 }
 
-读写文件
+复制文件内容
+file copy使用方便也有限制，其创建的目标文件是源文件逐个字节复制的副本，且只能应用与磁盘上的文件，
+chan copy允许复制时进行一些改变，可改变使用的字符编码，可应用于任何tcl通道，如管道、套接字以及磁盘上文件
 
+set input [open a.txt r]；
+set output [open 2.txt w]；
+chan copy $input $output;
+close $input;
+close $output
 
-
-
+时间延迟
 
 
 
