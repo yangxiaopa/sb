@@ -531,13 +531,40 @@ proc sum {args} {
 sum 1 2 3 4
 10
 
-传引用调用upvar
+11.0访问文件
+cd dirname  cd(change directory):将当前工作目录改为dirname
+pwd ：返回当前工作目录的完整路径
+open name access :#open "input.txt" w+ 打开名为name的文件，access可以为r r+ w w+ a a+
 
+操作文件和目录名
+处理磁盘上的文件
+创建目录：file mkdir output;#创建output的文件夹
+删除文件: file delete a.txt;#删除文件a.txt
+	  file delete a.txt b.txt;#删除两个文件
+	  file delete {*}[glob *.txt];#删除文件夹下所有的以.txt为后缀的文件
 
+复制文件：file copy 1.txt 2.txt;#file copy命令把文件1.txt复制到2.txt
+	  glob *.txt;#glob命令校验以.txt为后缀的文件哪些存在
+          可以使用-force选项让file copy命令覆盖已经存在的目标文件：file copy -force 1.txt 2.txt;#-force可避免因2.txt文件存在而报错。
 
+将多个文件复制到目录中
+file mkdir bag;#创建bag文件夹
+file copy 1.txt 2.txt bag;#将文件1.txt 2.txt复制到目标目录bag中，
 
+重命名和移动文件
+file rename 1.txt 11.txt；#将1.txt文件重命名为11.txt
 
+文件信息命令
+file option name 
+       ||
+       ||
+       \/
+如exists、readable、size,如果制定的文件存在exists返回1， name为指定的文件名
+if { [file exists output1]==0} {
+      file mkdir output1 ;
+}
 
+读写文件
 
 
 
