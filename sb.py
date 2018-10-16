@@ -76,7 +76,7 @@ if abs(ux-0.53009277713228375450)<1e-12 and abs(uy+0.17789363846931768864)<1e-12
 else:
     print("Failed!")
     
-    
+https://openseestutorial.readthedocs.io/zh/latest/forcedispelement.html   #位移法——刚度法（位移插值函数）；力法——柔度法（及力插值函数）的讲解与比较！    
     
     
     
