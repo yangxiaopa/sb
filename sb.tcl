@@ -26,7 +26,25 @@ set foo 0; #******
 		file mkdir $dataDir; 						# create output folder
 	}
 	
-
+#                       Eigenvalue Analysis                    			   
+############################################################################
+	set pi [expr 2.0*asin(1.0)];					# Definition of pi
+	set nEigenI 1;							# mode i = 1
+	set nEigenJ 2;							# mode j = 2
+	set lambdaN [eigen [expr $nEigenJ]];				# eigenvalue analysis for nEigenJ modes
+	set lambdaI [lindex $lambdaN [expr 0]];				# eigenvalue mode i = 1
+	set lambdaJ [lindex $lambdaN [expr $nEigenJ-1]];		# eigenvalue mode j = 2
+	set w1 [expr pow($lambdaI,0.5)];				# w1 (1st mode circular frequency)
+	set w2 [expr pow($lambdaJ,0.5)];				# w2 (2nd mode circular frequency)
+	set T1 [expr 2.0*$pi/$w1];					# 1st mode period of the structure
+	set T2 [expr 2.0*$pi/$w2];					# 2nd mode period of the structure
+	puts "T1 = $T1 s";						# display the first mode period in the command window
+	puts "T2 = $T2 s";						# display the second mode period in the command window
+	
+	
+	
+	
+	
 tcl反斜线序列：\n 换行符 \b 删除 \f 换页符 \r 回车 \t 制表符 \v 垂直制表符 
 双引号引用：双引号可取消其中单词和命令分隔符的特殊解释，大括号取消其中所有特殊字符的特殊解释						 
 若想在由双引号括起来的单词中包含双引号字符，则应该使用反斜线替换：set msg "could not open file \"name.out\""   could not open file "name.out"
