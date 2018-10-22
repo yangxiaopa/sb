@@ -13,6 +13,20 @@ set bar
 注释
 set foo 0; #******
 
+根据分析类型创建适当的文件夹
+例如：
+	# Define type of analysis:  "pushover" = pushover;  "dynamic" = dynamic
+	set analysisType "dynamic";
+	if {$analysisType == "pushover"} {
+		set dataDir Concentrated-Pushover-Output;	# name of output folder
+		file mkdir $dataDir; 						# create output folder
+	}
+		if {$analysisType == "dynamic"} {
+		set dataDir Concentrated-Dynamic-Output;	# name of output folder
+		file mkdir $dataDir; 						# create output folder
+	}
+	
+
 tcl反斜线序列：\n 换行符 \b 删除 \f 换页符 \r 回车 \t 制表符 \v 垂直制表符 
 双引号引用：双引号可取消其中单词和命令分隔符的特殊解释，大括号取消其中所有特殊字符的特殊解释						 
 若想在由双引号括起来的单词中包含双引号字符，则应该使用反斜线替换：set msg "could not open file \"name.out\""   could not open file "name.out"
