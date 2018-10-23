@@ -60,8 +60,35 @@ proc Gravity_Proc { Step } {
     loadConst -time 0.0                # maintain constant gravity loads and reset time to zero
 }
 Gravity_Proc 10	
-	
-	
+
+
+################################################################################
+#Mode1: First Mode Used to Define Rayleigh Damping.（用于定义瑞利阻尼的第一周期）
+#Mode2: Second Mode Used to Define Rayleigh Damping.（用于定义瑞利阻尼的第二周期）
+#Damp: Damping Ratio. (阻尼比)
+
+proc Rayleigh_Proc { Mode1 Mode2 Damp } {
+    set lambdaN [eigen -fullGenLapack [expr $Mode2]]
+    set lambdaI [lindex $lambdaN [expr $Mode1-1]]
+    set lambdaJ [lindex $lambdaN [expr $Mode2-1]]
+    set omegaI [expr pow($lambdaI,0.5)]
+    set omegaJ [expr pow($lambdaJ,0.5)]
+    set alphaM [expr $Damp*(2*$omegaI*$omegaJ)/($omegaI+$omegaJ)]
+    set betaKcurr [expr 2.*$Damp/($omegaI+$omegaJ)]
+    rayleigh $alphaM $betaKcurr 0 0
+    puts "Rayleigh Damping Defined"
+}
+Rayleigh_Proc 1 3 0.05
+
+######################################################################################
+
+
+
+
+
+
+
+
 	
 tcl反斜线序列：\n 换行符 \b 删除 \f 换页符 \r 回车 \t 制表符 \v 垂直制表符 
 双引号引用：双引号可取消其中单词和命令分隔符的特殊解释，大括号取消其中所有特殊字符的特殊解释						 
