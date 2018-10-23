@@ -45,19 +45,19 @@ set foo 0; #******
 #############################################################################
 #Step：Number of Steps.（分析步数）
 proc Gravity_Proc { Step } {
-    set incr [expr 1./$Step]
-    set Tol 1.0e-6;    
-    constraints Transformation
-    numberer RCM
-    system UmfPack
-    test NormDispIncr $Tol 6;
+    set incr [expr 1./$Step]           # convergence tolerance for test
+    set Tol 1.0e-6;                    
+    constraints Transformation         # how it handles boundary conditions
+    numberer RCM                       # renumber dof's to minimize band-width (optimization)
+    system UmfPack                     # how to store and solve the system of equations in the analysis (large model: try UmfPack)
+    test NormDispIncr $Tol 6;          # determine if convergence has been achieved at the end of an iteration step
     #test EnergyIncr 1.0e-6 200
-    integrator LoadControl $incr
-    algorithm Newton
-    analysis Static
-    analyze $Step
+    integrator LoadControl $incr       # determine the next time step for an analysis  
+    algorithm Newton                   # use Newton's solution algorithm: updates tangent stiffness at every iteration
+    analysis Static                    # define type of analysis: static or transient
+    analyze $Step                      # apply gravity
     puts "Gravity Done."
-    loadConst -time 0.0
+    loadConst -time 0.0                # maintain constant gravity loads and reset time to zero
 }
 Gravity_Proc 10	
 	
