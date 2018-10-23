@@ -41,7 +41,25 @@ set foo 0; #******
 	puts "T1 = $T1 s";						# display the first mode period in the command window
 	puts "T2 = $T2 s";						# display the second mode period in the command window
 	
-	
+#                       Gravity_Proc：自重加载
+#############################################################################
+#Step：Number of Steps.（分析步数）
+proc Gravity_Proc { Step } {
+    set incr [expr 1./$Step]
+    set Tol 1.0e-6;    
+    constraints Transformation
+    numberer RCM
+    system UmfPack
+    test NormDispIncr $Tol 6;
+    #test EnergyIncr 1.0e-6 200
+    integrator LoadControl $incr
+    algorithm Newton
+    analysis Static
+    analyze $Step
+    puts "Gravity Done."
+    loadConst -time 0.0
+}
+Gravity_Proc 10	
 	
 	
 	
