@@ -81,9 +81,39 @@ proc Rayleigh_Proc { Mode1 Mode2 Damp } {
 Rayleigh_Proc 1 3 0.05
 
 ######################################################################################
+set xDamp 0.05;
+set nEigenI 1;
+set nEigenJ 2;
+set lambdaN [eigen [expr $nEigenJ]];                                             《简单版本》
+set lambdaI [lindex $lambdaN [expr $nEigenI-1]];
+set lambdaJ [lindex $lambdaN [expr $nEigenJ-1]];
+set omegaI [expr pow($lambdaI,0.5)]; 
+set omegaJ [expr pow($lambdaJ,0.5)];
+set alphaM [expr $xDamp*(2*$omegaI*$omegaJ)/($omegaI+$omegaJ)]; 
+set betaKcurr [expr 2.*$xDamp/($omegaI+$omegaJ)];   
+rayleigh $alphaM $betaKcurr 0 0 
+#######################################################################################
 
-
-
+#Mode_Proc：模态分析
+#ModeNum: Number of Modes to Solve.（求解的模态数）
+proc Mode_Proc { ModeNum } {
+    set pi 3.1415926
+    set lambda [eigen -fullGenLapack  $ModeNum]
+    set period "Periods.txt"
+    set Periods [open $period "w"]
+    set i 1
+    foreach lam $lambda {
+        set period [expr 2*$pi / sqrt($lam)]
+        set period [format "%.3f" $period]
+        set str "Mode "; append str $i; append str ": "; append str $period
+        puts $Periods "$str"; puts "$str"
+        incr i
+    }
+    close $Periods
+    record
+}
+Mode_Proc 12
+##########################################################################################
 
 
 
