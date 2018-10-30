@@ -1,3 +1,18 @@
+clear all
+load node.out
+plot(node(4:end,1)-3,node(4:end,2))
+hold on
+plot(node(4:end,1)-3,(node(4:end,8)-node(4:end,2)),'r')
+plot(node(4:end,1)-3,(node(4:end,14)-node(4:end,8)),'g')
+legend('first interstory drift [m]','second interstory drift [m]','third interstory drift [m]')
+
+
+
+
+
+help funname   在命令窗口打开帮助文档
+doc funname    在帮助浏览器打开帮助文档
+lookfor funname 搜索某关键字相关函数
 1.MATLAB中计算程序运行时间的代码
 tic
 %代码块
@@ -14,3 +29,64 @@ if { [file exists output] == 0 } {
 
 3.  which co.tcl 
  显示当前co.tcl工作目录
+
+clear all
+load node1.out   %加载node1.out文件
+
+exist
+用于判断目录或者文件是否存在
+
+对文件的操作
+f=fullfile('D:','MATLAB','example.txt'); %得到打开文件的信息     ***
+fid=fopen(f);        %打开文件，fid=-1表示打开文件失败；fid=1表示输出；fid=2表示错误信息文件 fid=其他正数表示文件打开成功，并返回文件编号
+d =fscanf(fid,'%c');  fid=fopen(f,'r')以读的方式打开文件，打开方式有：r, w, a, r+, w+, a+, A, W
+fclose(fid); %关闭文件，关闭多个文件有fclose('all')
+
+load
+可用于读取数值文件，并且无需打开文件，但要求文件中所有行的列数相同  ***
+f=fullfile('D:','MATLAB','example.txt');
+A=load（f);%返回以f为路径的文件的内容
+
+fread
+读取文件中的内容，需和fopen,fclose配合使用，返回的是ASCII码，可以指定返回字节数和返回的格式。
+f=fullfile('D:','Matlab','example.txt'); 
+fid = fopen(f, 'r'); 
+a=fread(fid); %读取文件全部内容，返回的是每个字节的ASCII码
+
+fscanf
+用于读取文件中指定格式的内容，需和需和fopen,fclose配合使用，可指定读取的字节数，返回内容存放在一个一维数组中
+f=fullfile('D:','Matlab','example.txt');
+fid = fopen(f, 'r');
+a=fscanf(fid,'%d'); %读取文件中的所有数字，返回到数组a中         ***
+[a,count]=fscanf(fid,'%d',5); %读取文件中fid指向位置开始后面的5个数字，返回到数组a中，count返回a的大小，count<=5(返回的数字个数可能小于要求
+fclose(fid);                   读取的个数)
+
+fgetl
+用于读取文件中的一行内容，不包括换行符，需和fopen,fclose配合使用，
+f=fullfile('D:','Matlab','example.txt');
+fid = fopen(f, 'r');
+tline=fgetl(fid); %从文件中读取fid指向的一行内容
+
+fprintf
+用于将指定格式数据写入到文件中，需和fopen,fclose配合使用
+y = [x; exp(x)];
+f=fullfile('D:','Matlab','example.txt');
+fid = fopen(f,'w');
+fprintf(fid,'%6.2f.8f\n',y);将矩阵y写入文件中
+
+feof
+用于判断是否为文件末尾，需和fopen,fclose配合使用
+f=fullfile('D:','Matlab','example.txt');
+fid = fopen(f, 'r');
+
+
+
+
+
+
+
+
+
+
+
+
