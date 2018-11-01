@@ -6,7 +6,30 @@ tcl解释器对双引号中各种分隔符不做处理，但对换行符及$和[
 set x {\n [expr 10+12]}
 \n [expr 10+12]
 
+opensees中单位由用户自己规定，单位在整体模型中必须统一
 N-M-C-KG为一套单位
+
+wipeAnalysis:删除之前全部分析命令，如system，numberer，constraints,integrator,algorithm,analysis等命令。
+
+D = $alphaM * M + $betaK * Kcurrent +$betaKinit * Kinit + $betaKcomm * KlastCommit 
+rayleigh $alphaM $betaK $betaKinit $betaKcomm 
+$alphaM factor applied to elements or nodes mass matrix          #质量矩阵的系数$alphaM
+$betaK factor applied to elements current stiffness matrix.      #本时步当前迭代步的刚度矩阵系数
+$betaKinit factor applied to elements initial stiffness matrix.  #初始刚度矩阵系数
+$betaKcomm factor applied to elements committed stiffness matrix.#上一个时步的刚度系数
+
+geomTransf transfType？ARG1？...
+
+geomTransf Linear $transfTag $vecxzX $vecxzY $vecxzZ 
+该命令用于构造线性坐标变换（LinearCrdTransf）对象，该对象执行从基本系统到全局坐标系的梁刚度和抵抗力的线性几何变换
+
+geomTransf PDelta $ transfTag $ vecxzX $ vecxzY $ vecxzZ 
+此命令用于构建P-Delta坐标转换（PDeltaCrdTransf）对象，该对象执行梁刚度和抵抗力从基本系统到全局坐标系的线性几何变换，考虑二阶P-Delta效应。注意：P LARGE Delta效果不包括P小三角效应。
+将Linear改为PDelta即可计算几何大变形（即：小应变大位移）目前opensees的几何大变形仅限于梁柱框架单元，对板壳合实体单元都未开发，关于剪力墙构件模型可参考陆新征网站。
+
+非线性力插值梁柱单元：nonlinearBeamColumn，关于力插值的理论可参考伯克利filip文章，传统位移插值欧拉梁用dispBeamColumn.
+
+
 tcl基于字符串的命令语言，由 新行 或 分号 ；分隔的命令组成
 set foo 0
 set bar 
@@ -228,7 +251,43 @@ while循环 for循环 嵌套循环
 while {1} {
 	puts "this loop will run forever."  
 }
-                                                
+
+控制结构
+if {condition1} {
+	statement1
+} elseif {condition2} {
+	statement2
+} else {
+	statement3
+}
+************************
+foreach var list {
+	statement
+}
+************************
+for {initial} {test} {final} {
+	statement1
+}
+************************
+set sum 0
+for {set n 0} {$n<6} {incr n} {
+	set sum [expr $sum + $n]
+}
+************************
+while {condition1} {
+	statement1
+}
+************************
+set n 0;
+set sum 0;
+while {$n<5} {
+	incr n;
+	set sum [expr $sum + $n];
+}
+puts $sum;
+************************
+
+
 数组迭代
 set languages(0) Tcl
 set languages(1) "C Language"
