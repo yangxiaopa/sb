@@ -29,6 +29,22 @@ geomTransf PDelta $ transfTag $ vecxzX $ vecxzY $ vecxzZ
 
 非线性力插值梁柱单元：nonlinearBeamColumn，关于力插值的理论可参考伯克利filip文章，传统位移插值欧拉梁用dispBeamColumn.
 
+定义刚性楼板中心处的节点坐标
+node 9 0.0 0.0 1.0
+node 14 0.0 0.0 2.0
+node 19 0.0 0.0 3.0
+定义刚性楼板
+rigidDiaphragm 3 9 5 6 7 8
+rigidDiaphragm 3 14 10 11 12 13
+rigidDiaphragm 3 19 15 16 17 18
+不考虑刚性板z方向位移和绕 x y 轴转动，定义如下约束
+fix 9 0 0 1 1 1 0
+fix 14 0 0 1 1 1 0
+fix 19 0 0 1 1 1 0 
+注意：当模型中使用 rigidDiaphragm equalDOF 等约束时必须使用 constraint Transformation 或 constraint penalty,
+当模型中只有fix约束才可用plain！具体可参考有限元教材。当使用 Transformation 时只保留主节点自由度，从节点自由度被删除
+因此再对其他节点使用其他约束（比如fix）将出错。
+
 
 tcl基于字符串的命令语言，由 新行 或 分号 ；分隔的命令组成
 set foo 0
