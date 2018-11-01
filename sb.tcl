@@ -774,7 +774,20 @@ chan copy $input $output;
 close $input;
 close $output
 
-时间延迟
+upvar
+upvar的用法
+
+upvar 很象c语言的引用传参，我用一个例子说明
+set a 1 ;#定义变量a, 并且值设为1
+proc test {b} {
+upvar $b mya
+puts $b
+puts $mya
+}
+test a ;#调用函数 test
+a   ;#参数b的值为a(变量名）
+1  ;#由于upvar 使mya(变量名）指向a(变量名）指向的同一个变量,mya的为a的值
+upvar使的在函数内部可以更改函数外部的变量的值
 
 
 
