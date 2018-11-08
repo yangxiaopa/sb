@@ -6,7 +6,10 @@ plot(node(4:end,1)-3,(node(4:end,8)-node(4:end,2)),'r')
 plot(node(4:end,1)-3,(node(4:end,14)-node(4:end,8)),'g')
 legend('first interstory drift [m]','second interstory drift [m]','third interstory drift [m]')
 
-
+matlab对数据文件的操作
+文件每一行的数据项数是相同的，每个数据项由一个或多个空格分隔开，内容恰好构成一个矩阵
+clear all
+A=load('nod_rea_result\totalnode.out')
 
 
 
