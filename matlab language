@@ -8,11 +8,37 @@ legend('first interstory drift [m]','second interstory drift [m]','third interst
 
 matlab对数据文件的操作
 文件每一行的数据项数是相同的，每个数据项由一个或多个空格分隔开，内容恰好构成一个矩阵
-clear all
+clear all；删除工作区的所有变量
 A=load('nod_rea_result\totalnode.out')
 
+ans（answer）是matlab中默认的结果变量，每次结果运算后都将存储在指定变量中，只输入表达式缺不指定变量，matlab自动将结果存储在ans变量中。
+如果用分号“；”结束语句, matlab 将执行计算, 但阻止在命令窗口中显示输出。
+转置矩阵A,将行与列对换命令为A'
+矩阵A的逆，inv（A)
+.* .^ 为矩阵内部元素的乘法和幂次方
+水平串联矩阵a用逗号，可表示为b=[a,a]
+垂直串联矩阵a用分号，可表示为b=[a;a]
+
+矩阵元素的操作
+   16 2  3  13
+A= 5  11 10 8
+   9  7  6  12
+   4  14 15 1
+A（4，2）ans=14 定位矩阵A 的4行12列元素
+A（1:3,2) ans=2 输出矩阵A1到3行的第二列
+	      11	
+              7
+A（3，：）ans=9 7 6 12 输出矩阵A的三行所有列
+
+B=0：10：100 ans=0 10 20 30 40 50 60 70 80 90 100  star : step : end  若省略中间部，此时默认为1
 
 
+
+
+
+
+
+	      
 help funname   在命令窗口打开帮助文档
 doc funname    在帮助浏览器打开帮助文档
 lookfor funname 搜索某关键字相关函数
