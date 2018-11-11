@@ -71,6 +71,9 @@ fid=fopen(f);        %打开文件，fid=-1表示打开文件失败；fid=1表�
 d =fscanf(fid,'%c');  fid=fopen(f,'r')以读的方式打开文件，打开方式有：r, w, a, r+, w+, a+, A, W
 fclose(fid); %关闭文件，关闭多个文件有fclose('all')
 
+无论读还是写文件必须用fopen函数打开文件，默认下fopen以二进制格式打开文件 fopen（‘filename’，‘mode’） 若fopen函数返回-1表示无法打开文件
+fclose函数返回数值0表示成功关闭文件
+
 load
 可用于读取数值文件，并且无需打开文件，但要求文件中所有行的列数相同  ***
 f=fullfile('D:','MATLAB','example.txt');
