@@ -29,14 +29,16 @@ subplot(2,2,2); mesh(y); title('y');
 subplot(2,2,3); mesh(z); title('z');
 subplot(2,2,4); mesh(x,y,z); title('x,y,z');
 
++ - * / \ ^ ' ()   矩阵运算符
++ - .* ./ .\ .^ .' 阵列运算符（元素与元素件运算）
 
-
-
+inf---infinity  NaN---not a number 
 
 matlab对数据文件的操作
-文件每一行的数据项数是相同的，每个数据项由一个或多个空格分隔开，内容恰好构成一个矩阵
+文件每一行的数据项数是相同的(数据为矩形形状)，每个数据项由一个或多个空格分隔开，内容恰好构成一个矩阵
 clear all；删除工作区的所有变量
 A=load('nod_rea_result\totalnode.out')
+A=load('node1.out') >>> 将文件导入工作空间并赋给变量A
 
 ans（answer）是matlab中默认的结果变量，每次结果运算后都将存储在指定变量中，只输入表达式缺不指定变量，matlab自动将结果存储在ans变量中。
 如果用分号“；”结束语句, matlab 将执行计算, 但阻止在命令窗口中显示输出。
@@ -70,8 +72,22 @@ f=5*ones(3,3)
 f=5 5 5
   5 5 5 
   5 5 5
-  
+n=(0:9)'  pows=[n n.^2 2.^n]  
+n= 0     pows=   0   0   1
+   1             1   1   2
+   2             2   4   4
+   3             3   9   8
+   4             4   16  16
+   5             5   25  32
+   6             6   36  64
+   7             7   49  128
+   8             8   64  81
+   9             9   81  512
 
+x=A;
+x(:,2)=[] >>> 使矩阵A第二列为空
+
+X(1:2,2:3) = 0 >>> 使矩阵相应位置上的这4个元素为0
 
 
 
@@ -81,6 +97,7 @@ f=5 5 5
 help funname   在命令窗口打开帮助文档
 doc funname    在帮助浏览器打开帮助文档
 lookfor funname 搜索某关键字相关函数
+
 1.MATLAB中计算程序运行时间的代码
 tic
 %代码块
@@ -97,9 +114,6 @@ if { [file exists output] == 0 } {
 
 3.  which co.tcl 
  显示当前co.tcl工作目录
-
-clear all
-load node1.out   %加载node1.out文件
 
 exist
 用于判断目录或者文件是否存在
