@@ -32,6 +32,16 @@ subplot(2,2,4); mesh(x,y,z); title('x,y,z');
 + - * / \ ^ ' ()   矩阵运算符
 + - .* ./ .\ .^ .' 阵列运算符（元素与元素件运算）
 
+常见的数据精确度类型
+char---带符号的字符8bits
+short---短整数16bits
+long---长整数16bits
+float---单精度浮点数32bits
+double---双精度浮点数32bits
+
+格式转换符
+%c---读取字符型变量   %s---读取字符串变量   %d---读取整数型变量
+
 inf---infinity  NaN---not a number 
 
 -----------------------------------matlab对数据文件的操作---------------------------------
@@ -68,7 +78,7 @@ save .mat	avifile .avi	cdfwriter .cdf	 hdf .hdf	wavewrite.wav	xlswrite .xls
 
 
 
-ans（answer）是matlab中默认的结果变量，每次结果运算后都将存储在指定变量中，只输入表达式缺不指定变量，matlab自动将结果存储在ans变量中。
+ans（answer）是matlab中默认的结果变量，每次结果运算后都将存储在指定变量中，只输入表达式却不指定变量，matlab自动将结果存储在ans变量中。
 如果用分号“；”结束语句, matlab 将执行计算, 但阻止在命令窗口中显示输出。
 转置矩阵A,将行与列对换命令为A'
 矩阵A的逆，inv（A)
@@ -161,7 +171,7 @@ fread
 读取文件中的内容，需和fopen,fclose配合使用，返回的是ASCII码，可以指定返回字节数和返回的格式。
 f=fullfile('D:','Matlab','example.txt'); 
 fid = fopen(f, 'r'); 
-a=fread(fid); %读取文件全部内容，返回的是每个字节的ASCII码
+a=fread(fid); %读取文件全部内容，fread函数返回的是每个字节的ASCII码赋给变量a
 
 fscanf
 用于读取文件中指定格式的内容，需和需和fopen,fclose配合使用，可指定读取的字节数，返回内容存放在一个一维数组中
