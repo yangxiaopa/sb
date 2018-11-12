@@ -34,11 +34,39 @@ subplot(2,2,4); mesh(x,y,z); title('x,y,z');
 
 inf---infinity  NaN---not a number 
 
-matlab对数据文件的操作
-文件每一行的数据项数是相同的(数据为矩形形状)，每个数据项由一个或多个空格分隔开，内容恰好构成一个矩阵
+-----------------------------------matlab对数据文件的操作---------------------------------
+1.文件每一行的数据项数是相同的(数据为矩形形状)，每个数据项由一个或多个空格分隔开，内容恰好构成一个矩阵
 clear all；删除工作区的所有变量
 A=load('nod_rea_result\totalnode.out')
 A=load('node1.out') >>> 将文件导入工作空间并赋给变量A
+
+2.若文件的数据内容由逗号分隔开，把该文件的内容全部读入阵列A >>>  A=dlmread('node1.out',',')
+
+3.处理一个包含文本头的的数据文件，可使用textread函数，并指定头行参数，textread可处理有固定格式的文件，也可处理无格式文件，还可对文件中每行数据按列读
+num1    num2    num3    num4
+0.3242  0.4324  0.3455  0.6754
+0.4566  0.9368  0.9892  0.9274
+0.4658  0.2832  0.9373  0.8233
+[num1,num2,num3,num4]=textread('testFile.txt','%f%f%f%f','headerlines',1)
+
+textread读取字母数字混合的数据
+Joe    gradeA  4.9  pass
+susan  gradeD  2.0  fail
+[name,gra,grades,answer] = textread('testFile.txt','%s%s%f%s')
+可选择的读取数据，如读取第一列和最后一列，可使用命令：
+[name,answer] = textread('testFile.txt','%s%*s%*f%s')
+
+textread处理文件分隔符为非空格的文件，textread函数将该分隔符作为其参数，比如文件中分隔符为分号，可使用如下命令：
+[name,gra,grades,answer] = textread('testFile.txt','%s%s%f%s','delimiter',';')
+
+4.使用导入函数读取二进制文件
+函数名称 读取文件的扩展名 数据格式
+load .mat	aviread .avi	cdfread .cdf	hdf .hdf	waveread .wav	xlsread .xls
+5.二进制数据的存写
+函数名称 读取文件的扩展名 数据格式
+save .mat	avifile .avi	cdfwriter .cdf	 hdf .hdf	wavewrite.wav	xlswrite .xls
+
+
 
 ans（answer）是matlab中默认的结果变量，每次结果运算后都将存储在指定变量中，只输入表达式缺不指定变量，matlab自动将结果存储在ans变量中。
 如果用分号“；”结束语句, matlab 将执行计算, 但阻止在命令窗口中显示输出。
@@ -164,7 +192,21 @@ fid = fopen(f, 'r');
 %3d  >>>按照长度为三的整型输出 比如10 为”_10" 
 %6.2f >>>输出总长度为6，小数后保留2位 比如3.14159 为 “_ _ _3.14"
 %s 或 %c >>>输出字符串
-
+Supported conversion specifications:
+         %n - read a number - float or integer (returns double array)
+              %5n reads up to 5 digits or until next delimiter
+         %d - read a signed integer value (returns double array)
+              %5d reads up to 5 digits or until next delimiter
+         %u - read an integer value (returns double array)
+              %5u reads up to 5 digits or until next delimiter
+         %f - read a floating point value (returns double array)
+              %5f reads up to 5 digits or until next delimiter
+         %s - read a whitespace separated string (returns cellstr)
+              %5s reads up to 5 characters or until whitespace
+         %q - read a double-quoted string, ignoring the quotes (returns cellstr)
+              %5q reads up to 5 non-quote characters or until whitespace
+         %c - read character or whitespace (returns char array)
+              %5c reads up to 5 characters including whitespace
 
 
 
