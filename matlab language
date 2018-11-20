@@ -219,6 +219,43 @@ Supported conversion specifications:
               %5c reads up to 5 characters including whitespace
 
 
+-------------MATLAB遗传算法-----------------
+matlab的三种遗传算法工具箱：
+1：gaot工具箱，非matlab软件自带的工具箱，任然可以自己配置使用。飞思科技的《matlab6.x辅助优化计算与设计》第五章对遗传算法使用有介绍
+2：gatbx工具箱，由英国设菲尔德sheffield大学开发的gatbas工具箱，非matlab软件自带工具箱。雷杰英《matlab遗传算法工具箱及应用》有详细使用说明
+3：gads工具箱，matlab自带的工具箱，可查看雷杰英《matlab遗传算法工具箱及应用》进一步了解
+
+遗传算法（genetic algorithm 缩写为GA)：可有效解决最优化问题的方法，遗传算法是模拟达尔文的遗传选择和自然淘汰的生物进化过程的计算模型
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
