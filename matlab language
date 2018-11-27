@@ -297,10 +297,52 @@ BaseV =
      8     8     8     8     4     4     4     4     4
 -------------------------------------------------------
 crtrp  %创建实值原始种群
+--------------------------
+migrate  %在子种群间迁移个体
+[Chrom, ObjV] = migrate(Chrom, SUBPOP, MigOpt, ObjV)  %migrate完成在当前种群Chrom的子种群间迁移个体，并返回迁移后的种群Chrom.Chrom的一行对应一个个体，子种群数量由SUBPOP指定
+[Chrom, ObjV] = migrate(Chrom, SUBPOP, [0.3 1 2], ObjV)
+在一子种群中选择30%的个体并用从单向环状结构的临近子种群中选择最适应（较小的ObjV）的个体替换
+--------------------------
+mut %离散变异算子
+NewChrom = mut(OldChrom,Pm,BaseV)  %使用第三个变量指明染色体个体元素的变异的基本字符，染色体结构的长度Lind=length(BaseV)
+BaseV=[8 8 8 4 4 4 4 4]
+
+BaseV =
+
+     8     8     8     4     4     4     4     4
+[Chrom, Lind, BaseV]=crtbp(6,BaseV)
+
+Chrom =
+
+     5     7     3     0     3     2     1     3
+     3     4     1     1     3     1     1     0
+     6     4     6     1     1     2     1     3
+     4     4     1     3     0     2     2     2
+     2     1     1     1     1     0     0     1
+     7     2     1     0     1     0     1     2
 
 
+Lind =
+
+     8
 
 
+BaseV =
+
+     8     8     8     4     4     4     4     4
+NewChrom = mut(Chrom, 0.0778, BaseV)
+
+NewChrom =
+
+     5     7     1     0     3     2     1     3
+     3     4     1     1     3     1     1     0
+     6     4     6     1     1     0     1     3
+     4     4     1     3     0     2     2     1
+     2     1     1     1     1     0     0     1
+     7     2     1     0     1     0     1     2
+     
+--------------------------
+mutate   %个体的变异（高级函数）
 
 
 
