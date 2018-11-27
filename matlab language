@@ -343,7 +343,8 @@ NewChrom =
      
 --------------------------
 mutate   %个体的变异（高级函数）
-
+NewChrom = mutate(MUT_F, OldChrom, FieldDR, MutOpt, SUBPOP) 
+对于二进制种群,选取MUT_F='mut'  对于十进制种群，选取MUT_F='mutbga'
 
 
 
