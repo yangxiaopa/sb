@@ -709,19 +709,143 @@ SelCh =
      8    18    28
 ---------------------
 sus %随机遍历抽样
-NewChrIx = sus(FitnV, Nsel)	%sus按照个体在当前种群中的适应度FitnV为繁殖概率性选择Nsel个个体
+NewChrIx = sus(FitnV, Nsel)	%sus按照个体在当前种群中的适应度FitnV为繁殖概率性选择Nsel个个体.sus是一低级函数，通常被select调用
+FitnV = [1.50;1.35;1.21;1.07;0.92;0.78;0.64;0.5]
 
+FitnV =
 
+    1.5000
+    1.3500
+    1.2100
+    1.0700
+    0.9200
+    0.7800
+    0.6400
+    0.5000
+NewChrIx = sus(FitnV,6)
 
+NewChrIx =
 
+     6
+     7
+     1
+     2
+     3
+     4
+------------------
+xovdp	%两点交叉
+NewChrom = xovdp(OldChrom, XOVR)	%xovdp完成当前种群OldChrom中一对个体按交叉概率XOVR进行交叉，返回交配后的新种群NewChrom.XOVR是可选参数
+表明交叉概率，xovdp为低级交叉函数，被函数recombin调用
+-------------
+xovdprs		%减少代理的两点交叉
+NewChrom = xovdprs(OldChrom, XOVR) 	%xovdprs在当前种群OldChrom中一对个体间按交叉概率XOVR进行减少代理两点交叉，并返回交配后的新种群NewChrom
+xovdprs为低级交叉函数，被函数recombin调用
+OldChrom=crtbp(5,6)
 
+OldChrom =
 
+     1     1     1     1     0     0
+     0     0     0     0     0     0
+     1     0     1     1     1     0
+     0     0     1     0     0     1
+     1     1     0     0     1     0
+NewChrom = xovdprs(OldChrom, 0.7)
 
+NewChrom =
 
+     1     1     0     1     0     0
+     0     0     1     0     0     0
+     1     0     1     0     1     0
+     0     0     1     1     0     1
+     1     1     0     0     1     0
+-------------------------------------
+xovmp		%多点交叉，xovmp为低级交叉函数，被调用
+NewChrom =  xovmp(OldChrom, Px, Npt, Rs)
+---------------------------------------
+xovsh	%洗牌交叉，为低级交叉函数，被函数recombin调用
+NewChrom = xovsh(OldChrom, XOVR)
+OldChrom=crtbp(5,6)
 
+OldChrom =
 
+     0     0     1     1     1     0
+     0     0     1     1     1     1
+     0     0     1     0     0     1
+     1     0     1     1     1     1
+     0     1     1     1     0     1
+NewChrom = xovsh(OldChrom, 0.7)
 
+NewChrom =
 
+     0     0     1     1     1     0
+     0     0     1     1     1     1
+     1     0     1     0     1     1
+     0     0     1     1     0     1
+     0     1     1     1     0     1
+--------------------------------------
+xovshrs		%减少代理的洗牌交叉，为低级交叉函数，被函数recombin调用
+NewChrom = xovshrs(OldChrom, XOVR)
+OldChrom=crtbp(5,6)
+
+OldChrom =
+
+     1     0     0     1     1     1
+     0     0     1     1     0     0
+     0     0     1     1     0     0
+     1     1     1     1     0     0
+     0     1     0     1     0     0     
+NewChrom = xovshrs(OldChrom, 0.7)
+
+NewChrom =
+
+     0     0     0     1     1     1
+     1     0     1     1     0     0
+     1     1     1     1     0     0
+     0     0     1     1     0     0
+     0     1     0     1     0     0
+------------------------------------
+xovsp		%单点交叉，为低级交叉函数，被函数recombin调用
+NewChrom = xovsp(OldChrom, XOVR)
+OldChrom=crtbp(5,6)
+
+OldChrom =
+
+     0     0     0     1     1     0
+     0     0     0     1     1     0
+     0     0     0     1     1     1
+     1     0     0     0     0     0
+     0     1     0     0     1     0
+NewChrom = xovsp(OldChrom, 0.7)
+
+NewChrom =
+
+     0     0     0     1     1     0
+     0     0     0     1     1     0
+     0     0     0     1     0     0
+     1     0     0     0     1     1
+     0     1     0     0     1     0     
+-------------------------------------
+xovsprs		%减少代理的单点交叉，，为低级函数，通常被函数recombin调用
+NewChrom = xovsprs(OldChrom, XOVR)
+OldChrom=crtbp(5,6)
+
+OldChrom =
+
+     1     1     0     0     1     1
+     1     1     1     0     0     0
+     1     1     1     1     1     0
+     1     0     1     0     0     0
+     0     0     0     0     0     1
+NewChrom = xovsprs(OldChrom, 0.7)
+
+NewChrom =
+
+     1     1     0     0     0     0
+     1     1     1     0     1     1
+     1     1     1     0     0     0
+     1     0     1     1     1     0
+     0     0     0     0     0     1
+--------------------------------------
 
 
 
