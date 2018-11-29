@@ -219,7 +219,7 @@ Supported conversion specifications:
               %5c reads up to 5 characters including whitespace
 
 
-------------------------------------------MATLAB遗传算法-----------------------------------------
+------------------------------------------MATLAB遗传算法--------http://codem.group.shef.ac.uk/index.php/ga-toolbox
 matlab的三种遗传算法工具箱：
 1：gaot工具箱，非matlab软件自带的工具箱，任然可以自己配置使用。飞思科技的《matlab6.x辅助优化计算与设计》第五章对遗传算法使用有介绍
 2：gatbx工具箱，由英国设菲尔德sheffield大学开发的gatbas工具箱，非matlab软件自带工具箱。雷杰英《matlab遗传算法工具箱及应用》有详细使用说明
