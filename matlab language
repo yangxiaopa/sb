@@ -883,8 +883,62 @@ NewChrom =
 4.变异概率,当变异概率较小时，群体多样性下降数度较快，易导致有效基因的迅速丢失且难以恢复，当变异概率较大时，群体多样性被保持在较高水平，但
 高阶模式被破坏的概率随之增大
 5.适应函数自身性质,当适应函数高度非线性，染色体基因位高度相关时，有效模式被破坏的可能性加大
-
-
+--------------------------------------------------------------------------------------
+gatbx工具箱实例
+--------------------
+fun_obj.m 文件,内容为
+%目标函数文件
+function y = fun_obj(x)
+y = x.*sin(10*pi*x)+2.0;
+end
+% x取值区间[-1,2]
+-----------------
+GA.m 文件
+%filename:Genetic Algorithm
+%确定遗传算法参数
+opt_maxmin = 1;          %目标优化类型：（1 最大化 ）（-1 最小化） 
+NIND = 40;               %个体数目
+MAXGEN = 25;             %最大遗传代数
+PRECI = 20;              %变量的二进制位数
+GGAP = 0.9;              %代沟
+lb = -1;                 %变量取值下限
+ub = 2;                  %变量取值上限
+code_gray_binary = 1;    %是否选择编码方式：（1 格雷）（0 二进制）
+scale_logarithmic_arithmetic = 0;   %指明每个字串的刻度：（1 对数刻度）（0 算术刻度）
+trace = zeros(MAXGEN,2);            %遗传迭代性能跟踪器
+FieldD = [PRECI; lb; ub; code_gray_binary; scale_logarithmic_arithmetic; 1; 1]; %区域描述器
+Chrom = crtbp(NIND, PRECI);         %初始化生成种群
+gen = 0;                            %代计数器
+x = bs2rv(Chrom, FieldD);           %翻译初始种群为十进制
+fun_Objective = fun_obj(x);         %计算目标函数值
+tx = lb: 0.01: ub;                  %横坐标
+plot(tx, fun_obj(tx));              %函数
+grid on;                            %给当前图形标记添加网络
+xlabel('x');
+ylabel('y');
+title('一元函数优化结果');
+hold on;
+while gen < MAXGEN
+    FitnV = ranking(-opt_maxmin * fun_Objective);    %计算目标函数适应度(基于秩的适应度计算)
+    SelCh = select('sus', Chrom, FitnV, GGAP);       %使用随机遍历方式选择
+    SelCh = recombin('xovsp', SelCh, 0.7);           %交叉(单点交叉)
+    SelCh = mut(SelCh);                              %变异（离散变异）
+    x = bs2rv(SelCh, FieldD);                        %子代个体的十进制翻译转换
+    fun_Objective_sel = fun_obj(x);                  %计算子代个体对应的目标函数值
+    [Chrom, fun_Objective] = reins(Chrom, SelCh, 1, 1, opt_maxmin * fun_Objective, opt_maxmin * fun_Objective_sel);   %根据目标函数值将子代个体插入新群种
+    %输出最优解及其序号，并在目标函数图像中标出，Y为最优解，I为种群的序号
+    [Y, I] = max(fun_Objective);                     %寻找当前种群最优解
+    x = bs2rv(Chrom,FieldD);                         %二进制串到十进的制转换
+    Y = Y * opt_maxmin;
+    opt_maxmin = opt_maxmin * opt_maxmin;
+    gen = gen + 1;                                   %代计数器增加
+    trace(gen,1) = Y;                                %矩阵的秩，即对角元素之和
+    trace(gen,2) = mean(fun_Objective);    
+end
+plot(x(I), Y, 'r*'), figure, plot(trace(:,1), 'r-*'), hold on;
+plot(trace(:,2), 'b-o'), legend('各子代种群最优解', '各子代种群均值的变化'),...
+    xlabel('迭代次数'), ylabel('目标函数优化情况'), title('一元函数优化过程');
+------------------------------------------------------------------------------
 	
 	
 
