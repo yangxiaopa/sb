@@ -1121,12 +1121,102 @@ DNA为承载遗传信息的载体，科学家从其遗传的优化机制中受�
 fix()函数, 向零方向取整
 trace（m）函数 求方阵m的迹，方阵的迹就是方阵主对角线上所有元素之和
 clf   清除当前图窗的窗口
+-----------------------雷杰英,遗传算法工具箱及应用------例题7.12代码---------
+%多目标规划问题的遗传算法
+%time 2018/12/10
+%input 
+%output:最优解的目标函数值、最优解的染色体、遗传算法性能跟踪(用曲线图表示)
+clear all;      %清除所有变量
+close all;      %清图
+clc;            %清屏
+NIND = 100;     %个体数目
+MAXGEN = 50;    %最大遗传代数
+NVAR = 2;       %变量个数
+PRECI = 20;     %变量的二进制位数
+GGAP = 0.9;     %代沟
+trace1 = []; trace2 = []; trace3 = []; %性能跟踪,赋予空值，作为记录性能指标的初值，不是一个函数，而是记录最优目标函数值等性能指标的变量
+%建立区域描述器(Build field descriptor)
+FieldD = [rep(PRECI, [1,NVAR]); rep([1, 1; 4, 2], [1, 1]); rep([1; 0; 1; 1],[1, NVAR])];
+Chrom = crtbp(NIND, NVAR*PRECI);       %创建一个长度为NVAR*PRECI有NIND个个体的随机种群
+x = bs2rv(Chrom, FieldD);              %初始种群十进制转换
+gen = 1;
+while gen < MAXGEN
+    [NIND, N] = size(Chrom);           %获得当代种群的个体数目、基因数目
+    M = fix(NIND/2);                   %取整，M是分组后第一组的个体数目
+    Objv1 = f1(x(1:M,:));               %分组后第一组的第一目标函数值
+    FitnV1 = ranking(Objv1);           %分配适应度
+    SelCh1 = select('sus', Chrom(1:M,:), FitnV1, GGAP);			%使用随机遍历方式选择
+    Objv2 = f2(x(M+1:NIND,:));         %分组后第二组的第二目标函数值
+    FitnV2 = ranking(Objv2);           %分配适应度
+    SelCh2 = select('sus', Chrom(M+1:NIND,:), FitnV2, GGAP);		%使用随机遍历方式选择
+    SelCh = [SelCh1;SelCh2];		   %合并两个组
+    SelCh = recombin('xovsp', SelCh, 0.7); %重组
+    Chrom = mut(SelCh);				   %变异
+    x = bs2rv(Chrom, FieldD);		   %种群的十进制转换
+    trace1 (gen,1) = min(f1(x));	   %性能跟踪，记录每一代的第一目标函数最优值
+    trace1 (gen,2) = mean(f1(x));	   %性能跟踪，记录每一代的第一目标函数的平均值
+    trace2 (gen,1) = min(f2(x));	   %性能跟踪，记录每一代的第二目标函数最优值
+    trace2 (gen,2) = mean(f2(x));	   %性能跟踪，记录每一代的第二目标函数的平均值
+    trace3 (gen,1) = min(f1(x)+f2(x)); %性能跟踪，记录每一代的目标函数最优值
+    trace3 (gen,2) = mean(f1(x)+f2(x));%性能跟踪，记录每一代的目标函数的平均值
+    gen = gen + 1;
+end
+[Result, I] = min(f1(x)+f2(x));
+Result;								   %最优解的目标函数值
+Chrom(I,:);							   %输出最优解染色体
+
+figure(1);							   %第一目标函数 f1(v) 的最优解及性能跟踪
+plot(trace1(:,1), 'r-+');
+hold on;
+plot(trace1(:,2), 'g--.');
+grid;
+legend('解的变化', '种群的均值变化'), xlabel('迭代次数'), ylabel('目标函数值');
 
 
+figure(2);							   %第二目标函数 f2(v) 的最优解及性能跟踪
+plot(trace2(:,1), 'k-+');
+hold on;
+plot(trace2(:,2), 'c--.');
+grid;
+legend('解的变化','种群的均值变化'), xlabel('迭代次数'), ylabel('目标函数值');
 
 
+figure(3);							   %第三目标函数 f1(v)+f2(v) 的最优解及性能跟踪
+plot(trace3(:,1), 'k-+');
+hold on;
+plot(trace3(:,2), 'm--.');
+grid;
+legend('解的变化', '种群的均值变化'), xlabel('迭代次数'), ylabel('目标函数值');
 
 
+figure(4);							   %最后一代的目标函数值
+plot(f1(x));
+hold on;
+plot(f2(x),'.-.');
+grid;
+legend('第一目标函数值', '第二目标函数值');
+--------------------------------------------
+f1.m 文件内容
+%目标函数
+function y = f1(x)
+y = x(:,1).*x(:,1)/4+x(:,2).*x(:,2)/4;
+end
+---------------------------------------
+f2.m 文件内容
+%目标函数
+function y = f2(x)
+y = x(:,1).*(1-x(:,2))+10;
+end
+------------------------------
+Multi-objective GA
+通常,不同的多目标GA的差异体现在三个方面：适应度分配过程、精英主义（elitism)、多样化方法.
+--------------------------------------------------------------------------------
+处理多目标GA的普遍方法为 
+把所有目标函数合并成一个目标函数
+给某个集合分配只分配一个目标函数，以加权法为例，缺点是很难精确的确定权重，权重分配的细小差异可能导致相差很大的解
+精英主义(Elitism)思想就是最好的个体保存到下一代，多目标GA保存精英主义：
+1.在群体里保存精英个体 2.另外存储精英个体，并且把他们引入到群体中
+精英主义和多样性的保持机制能提高多目标GA的效果，但通常会提高计算复杂和存储空间，并行和分布式的GA是一种解决方法
 
 
 
